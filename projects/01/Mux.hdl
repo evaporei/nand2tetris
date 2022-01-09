@@ -15,43 +15,14 @@ CHIP Mux {
 
     PARTS:
     // Put your code here:
-    // Vars:
-    Not(in=a, out=notA);
-    Not(in=b, out=notB);
     Not(in=sel, out=notSel);
-
-    // ---- SETUP ----
-
-    // pt1 = (!a && b && sel)
-    And(a=notA, b=b, out=tmp1);
-    And(a=tmp1, b=sel, out=pt1);
-
-    // pt2 = (a && !b && !sel)
-    And(a=a, b=notB, out=tmp2);
-    And(a=tmp2, b=notSel, out=pt2);
-
-    // pt3 = (a && b && !sel)
-    And(a=a, b=b, out=tmp3);
-    And(a=tmp3, b=notSel, out=pt3);
-
-    // pt4 = (a && b && sel)
-    And(a=a, b=b, out=tmp4);
-    And(a=tmp4, b=sel, out=pt4);
-
-    // ---- SETUP ----
-
-    // ---- FINAL ----
-    // out = pt1 || pt2 || pt3 || pt4
-    Or(a=pt1, b=pt2, out=out1);
-    Or(a=out1, b=pt3, out=out2);
-    Or(a=out2, b=pt4, out=out);
-    // ---- FINAL ----
+    And(a=notSel, b=a, out=tmp1);
+    And(a=sel, b=b, out=tmp2);
+    Or(a=tmp1, b=tmp2, out=out);
 }
+// (!sel && a) || (sel && b)
+//
 // (!a && b && sel) || (a && !b && !sel) || (a && b && !sel) || (a && b && sel)
-// 
-// sel ? a : b
-// sel && 
-// (sel && a) || (sel && b)
 // 
 // a b sel res
 // 0 0 0   0
