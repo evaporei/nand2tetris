@@ -1,0 +1,64 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Mux.hdl
+
+/** 
+ * Multiplexor:
+ * out = a if sel == 0
+ *       b otherwise
+ */
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    // Put your code here:
+    // Vars:
+    Not(in=a, out=notA);
+    Not(in=b, out=notB);
+    Not(in=sel, out=notSel);
+
+    // ---- SETUP ----
+
+    // pt1 = (!a && b && sel)
+    And(a=notA, b=b, out=tmp1);
+    And(a=tmp1, b=sel, out=pt1);
+
+    // pt2 = (a && !b && !sel)
+    And(a=a, b=notB, out=tmp2);
+    And(a=tmp2, b=notSel, out=pt2);
+
+    // pt3 = (a && b && !sel)
+    And(a=a, b=b, out=tmp3);
+    And(a=tmp3, b=notSel, out=pt3);
+
+    // pt4 = (a && b && sel)
+    And(a=a, b=b, out=tmp4);
+    And(a=tmp4, b=sel, out=pt4);
+
+    // ---- SETUP ----
+
+    // ---- FINAL ----
+    // out = pt1 || pt2 || pt3 || pt4
+    Or(a=pt1, b=pt2, out=out1);
+    Or(a=out1, b=pt3, out=out2);
+    Or(a=out2, b=pt4, out=out);
+    // ---- FINAL ----
+}
+// (!a && b && sel) || (a && !b && !sel) || (a && b && !sel) || (a && b && sel)
+// 
+// sel ? a : b
+// sel && 
+// (sel && a) || (sel && b)
+// 
+// a b sel res
+// 0 0 0   0
+// 0 0 1   0
+// 0 1 0   0
+// 0 1 1   1   (!a && b && sel)
+// 1 0 0   1   (a && !b && !sel)
+// 1 0 1   0
+// 1 1 0   1   (a && b && !sel)
+// 1 1 1   1   (a && b && sel)
