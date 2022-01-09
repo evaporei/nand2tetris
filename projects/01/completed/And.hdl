@@ -15,4 +15,8 @@ CHIP And {
 
     PARTS:
     // Put your code here:
+    // Calculate NAND
+    Nand(a=a, b=b, out=tmp);
+    // Then invert/negate it using NOT
+    Not(in=tmp, out=out);// Same as Nand(a=tmp, b=tmp, out=out);
 }
