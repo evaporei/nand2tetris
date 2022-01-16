@@ -71,5 +71,16 @@ CHIP ALU {
    Not16(in=outF, out=notOutF);
 
    // out
-   Mux16(a=outF, b=notOutF, sel=no, out=out);
+   Mux16(a=outF, b=notOutF, sel=no, out=out, out[0..7]=outPt1, out[8..15]=outPt2, out[15]=lastSig);
+
+   // zr
+   // Nor16Way = only true if everything is 0
+   Or8Way(in=outPt1, out=out8Way1);
+   Or8Way(in=outPt2, out=out8Way2);
+   Or(a=out8Way1, b=out8Way2, out=out8WayFinal);
+   Not(in=out8WayFinal, out=zr);
+
+   // ng
+   // last significant bit is 1 -> negative
+   And(a=lastSig, b=true, out=ng);
 }
