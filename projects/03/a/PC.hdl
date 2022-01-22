@@ -17,4 +17,24 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+
+    // Increment what's in the current register
+    Inc16(in=register, out=regInc);
+
+    // If inc = 1, regOrInc=regInc else regOrInc=register
+    Mux16(a=register, b=regInc, sel=inc, out=regOrInc);
+
+    // Select between input given to load, or incremented
+    // value from the register.
+    Mux16(a=regOrInc, b=in, sel=load, out=loadOrInc);
+
+    // Reset the 16-bit value to zero if necessary
+    Mux16(a=loadOrInc, b[0..15]=false, sel=reset, out=regReset);
+
+    // I hate this load=true, but that's the only way I found
+    // to solve it. It works because we do a `load` switch before
+    // to keep the old value or not of the register.
+    // So it's kind of "inefficient" but in the end depends on
+    // how the "hardware engineer" will implement this.
+    Register(in=regReset, load=true, out=out, out=register);
 }
