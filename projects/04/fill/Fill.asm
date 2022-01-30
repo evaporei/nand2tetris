@@ -29,8 +29,9 @@
 // 	}
 // }
 
-// R0 will hold the keyboard input for the whole drawing loop
-// R1 holds the pixel, it's the incremental `i` of the drawing loop
+// vars
+// - keyboard: will hold the keyboard input for the whole drawing loop
+// - pixel: holds the pixel, it's the incremental `i` of the drawing loop
 
 // infinite loop, look at the end of the file
 (STARTLOOP)
@@ -46,8 +47,8 @@ M=D
 @KBD
 D=M
 
-// put in register 0 the keyboard value
-@R0
+// save the keyboard input in a variable
+@keyboard
 M=D
 
 // point to the beginning of the screen memory map
@@ -55,8 +56,8 @@ M=D
 D=A
 // @24573 // for debugging
 
-// R1=i
-@R1
+// pixel=i
+@pixel
 M=D
 
 // draw loop:
@@ -66,17 +67,17 @@ M=D
 // set in D in the end of the last loop
 // iteration
 
-// get keyboard press from R0
-@R0
+// get keyboard press
+@keyboard
 D=M
 
 // should write BLACK or WHITE?
 @WHITE
 D;JEQ
 
-// get the pixel to write that got set in R1
+// get the pixel to write that got set
 // in the last loop iteration
-@R1
+@pixel
 A=M
 // black line
 M=-1
@@ -86,16 +87,16 @@ M=-1
 0;JMP
 
 (WHITE)
-// get the pixel to write that got set in R1
+// get the pixel to write that got set
 // in the last loop iteration
-@R1
+@pixel
 A=M
 // white line
 M=0
 
 (ELSE)
-// store next pixel in R1
-@R1
+// store next pixel location
+@pixel
 // go to next screen memory map address
 M=M+1
 // store current pixel in D to do a jump
