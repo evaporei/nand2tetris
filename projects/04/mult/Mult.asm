@@ -9,17 +9,6 @@
 // This program only needs to handle arguments that satisfy
 // R0 >= 0, R1 >= 0, and R0*R1 < 32768.
 
-// 0 * 0 = 0
-// 1 * 0 = 0
-// 0 * 2 = 0
-// 3 * 1 = 3
-// 2 * 4 = 8
-// 6 * 7 = 42
-
-// let R0, R1, R2 = 0;
-
-
-
 // Put your code here.
 
 // R2 = 0
