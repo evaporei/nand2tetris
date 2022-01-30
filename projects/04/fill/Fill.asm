@@ -12,45 +12,103 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
-// [x] make a part of the screen black
-// [x] make write black loop
-// [x] stop at the final address
-// [x] graceful stop hehe
-// [ ] make a part of the screen black if keyboard pressed
-// [ ] make the whole screen blink based of keyboard input
 
+// Algorithm:
+// // infinite loop
+// 'start: loop {
+// 	// zero if not pressed
+// 	let input = keyboard();
+// 
+// 	// draws once at the whole screen for a keypress
+// 	for pixel in SCREEN..KBD {
+// 		if input == 0 {
+// 			draw(pixel, WHITE);
+// 		} else {
+// 			draw(pixel, BLACK);
+// 		}
+// 	}
+// }
+
+// R0 will hold the keyboard input for the whole drawing loop
+// R1 holds the pixel, it's the incremental `i` of the drawing loop
+
+// infinite loop, look at the end of the file
+(STARTLOOP)
 // setup:
 @KBD
 D=A
-// save in LOOP address the value of KBD,
+// save in DRAWLOOP address the value of KBD,
 // aka 1 address after the end of the screen
-@LOOP
+@DRAWLOOP
+M=D
+
+// let's read the keyboard for real
+@KBD
+D=M
+
+// put in register 0 the keyboard value
+@R0
 M=D
 
 // point to the beginning of the screen memory map
 @SCREEN
-// @24573 // for debugging
 D=A
+// @24573 // for debugging
 
-// loop:
-(LOOP)
+// R1=i
+@R1
+M=D
+
+// draw loop:
+(DRAWLOOP)
 
 // point to the next memory map address
 // set in D in the end of the last loop
 // iteration
-A=D
 
+// get keyboard press from R0
+@R0
+D=M
+
+// should write BLACK or WHITE?
+@WHITE
+D;JEQ
+
+// get the pixel to write that got set in R1
+// in the last loop iteration
+@R1
+A=M
 // black line
 M=-1
 
-// go to next screen memory map address
-D=D+1
+// escape white draw
+@ELSE
+0;JMP
 
-// stop at the end of the screen memory map
-@LOOP
+(WHITE)
+// get the pixel to write that got set in R1
+// in the last loop iteration
+@R1
+A=M
+// white line
+M=0
+
+(ELSE)
+// store next pixel in R1
+@R1
+// go to next screen memory map address
+M=M+1
+// store current pixel in D to do a jump
+D=M
+
+// if pixel == end of screen, stop drawing
+// it will go back to the start of the file
+// to read the keyboard again
+@DRAWLOOP
 M-D;JNE
 
 // infinite loop
 // end of program
-@END
+// back to the beginning
+@STARTLOOP
 0;JMP
