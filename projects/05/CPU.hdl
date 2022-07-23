@@ -40,4 +40,22 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+
+    // got a lot of help from this video
+    // https://www.youtube.com/watch?v=7Np0-fUYaC8&list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&index=12
+
+    // if instruction[15] = 0 -> A-instruction
+    // if instruction[15] = 1 -> C-instruction
+    // instruction[12] -> 'a' bit
+    // y is A or M register
+    Mux16(a=inM, b=aluOut, sel=instruction[5], out=aIn);
+
+    ALU(out=aluOut);
+
+    Not(in=instruction[15], out=aInstruction);
+    Or(a=aInstruction, b=instruction[5], loadA);
+
+    ARegister(a=aIn, b=, load=loadA, out=aRegOut);
+
+    DRegister(a=aluOut, b=, load=cDestD, out=dRegOut);
 }
