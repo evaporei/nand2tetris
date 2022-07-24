@@ -43,6 +43,8 @@ CHIP CPU {
 
     // got a lot of help from this video
     // https://www.youtube.com/watch?v=7Np0-fUYaC8&list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&index=12
+    // and this one
+    // https://www.youtube.com/watch?v=xHh2GdJl4Cs&list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&index=13
 
     // if instruction[15] = 0 -> A-instruction
     // if instruction[15] = 1 -> C-instruction
@@ -50,7 +52,7 @@ CHIP CPU {
     // y is A or M register
     Mux16(a=inM, b=aluOut, sel=instruction[5], out=aIn);
 
-    ALU(out=aluOut);
+    ALU(out=aluOut, out=outM, zr=zerop, ng=negp);
 
     Not(in=instruction[15], out=aInstruction);
     Or(a=aInstruction, b=instruction[5], loadA);
@@ -58,4 +60,16 @@ CHIP CPU {
     ARegister(a=aIn, b=, load=loadA, out=aRegOut);
 
     DRegister(a=aluOut, b=, load=cDestD, out=dRegOut);
+
+    Nand(a=zerop, b=negp, out=posp);
+
+    And(a=instruction[2], b=negp, out=and1);
+    And(a=instruction[1], b=zerop, out=and2);
+    And(a=instruction[0], b=posp, out=and3);
+
+    And(a=and1, b=and2, out=tempAnd);
+    And(a=tempAnd, b=and3, out=jump);// PC.load
+
+    // instruction[3] -> writeM
+    PC(in=aRegOut, load=jump, inc=1, reset=reset, out=pc);
 }
