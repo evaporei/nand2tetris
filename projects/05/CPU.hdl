@@ -46,30 +46,60 @@ CHIP CPU {
     // and this one
     // https://www.youtube.com/watch?v=xHh2GdJl4Cs&list=PLu6SHDdOToSdD4-c9nZX2Qu3ZXnNFocOH&index=13
 
-    // if instruction[15] = 0 -> A-instruction
-    // if instruction[15] = 1 -> C-instruction
-    // instruction[12] -> 'a' bit
-    // y is A or M register
-    Mux16(a=inM, b=aluOut, sel=instruction[5], out=aIn);
+    // Name each significant bit in the instruction input
+    Mux16(
+        a=false,
+        b=instruction,
+        sel=instruction[15],
+        out[0]=cJGT,
+        out[1]=cJEQ,
+        out[2]=cJLT,
+        out[3]=cDestM, out[3]=writeM,
+        out[4]=cDestD,
+        out[5]=cDestA,
+        out[6]=cAluNo,
+        out[7]=cAluF,
+        out[8]=cAluNy,
+        out[9]=cAluZy,
+        out[10]=cAluNx,
+        out[11]=cAluZx,
+        out[12]=cAorM,
+        // out[13] & out[14] are ignored in C-type instructions
+        out[15]=cType
+    );
 
-    ALU(out=aluOut, out=outM, zr=zerop, ng=negp);
+    // Pass important bits to ALU if C-type instruction
+    ALU(
+        x=xIn, y=yIn,
+        zx=cAluZx, nx=cAluNx,
+        zy=cAluZy, ny=cAluNy,
+        f=cAluF, no=cAluNo,
+        out=aluOut, out=outM,
+        zr=zerop, ng=negp
+    );
+    // Setup for jump logic
+    Or(a=zerop, b=negp, out=lteq);
+    Not(in=lteq, out=posp);
 
-    Not(in=instruction[15], out=aInstruction);
-    Or(a=aInstruction, b=instruction[5], loadA);
+    // A register logic
+    Mux16(a=instruction, b=aluOut, sel=cType, out=aMuxOut);
+    Mux16(a=aRegOut, b=inM, sel=cAorM, out=yIn);
 
-    ARegister(a=aIn, b=, load=loadA, out=aRegOut);
+    // Loading the A register
+    Not(in=cType, out=notCType);
+    Or(a=notCType, b=cDestA, out=loadA);
+    ARegister(in=aMuxOut, load=loadA, out=aRegOut, out[0..14]=addressM);
 
-    DRegister(a=aluOut, b=, load=cDestD, out=dRegOut);
+    // D register
+    DRegister(in=aluOut, load=cDestD, out=xIn);
 
-    Nand(a=zerop, b=negp, out=posp);
+    // Jump logic
+    And(a=cJEQ, b=zerop, out=JEQ);
+    And(a=cJLT, b=negp, out=JLT);
+    And(a=cJGT, b=posp, out=JGT);
 
-    And(a=instruction[2], b=negp, out=and1);
-    And(a=instruction[1], b=zerop, out=and2);
-    And(a=instruction[0], b=posp, out=and3);
+    Or(a=JEQ, b=JLT, out=JLE);
+    Or(a=JLE, b=JGT, out=jump);// PC.load
 
-    And(a=and1, b=and2, out=tempAnd);
-    And(a=tempAnd, b=and3, out=jump);// PC.load
-
-    // instruction[3] -> writeM
-    PC(in=aRegOut, load=jump, inc=1, reset=reset, out=pc);
+    PC(in=aRegOut, load=jump, inc=true, reset=reset, out[0..14]=pc, out[15]=false);
 }
