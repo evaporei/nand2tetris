@@ -17,7 +17,7 @@ impl Parser {
 
         match chars.peek() {
             Some('@') => Some(Instruction::a(chars)),
-            Some(_c) => todo!(),
+            Some(_c) => Some(Instruction::c(chars)),
             None => None,
         }
     }
