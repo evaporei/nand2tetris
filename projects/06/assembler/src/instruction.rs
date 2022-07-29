@@ -3,6 +3,7 @@ use std::str::Chars;
 
 type Symbol = String;
 
+#[derive(Debug, PartialEq)]
 pub enum Instruction {
     A(Symbol),
     C(CInstruction),
@@ -33,6 +34,7 @@ impl Instruction {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct CInstruction {
     #[allow(dead_code)]
     dest: Option<Symbol>,
@@ -47,8 +49,17 @@ use std::fmt;
 impl fmt::Display for Instruction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::A(number) => write!(f, "0{:b}", number.parse::<u16>().unwrap()),
+            Self::A(address) => write!(f, "0{:015b}", address.parse::<u16>().unwrap()),
             Self::C(_c_instr) => write!(f, "111"),
         }
     }
+}
+
+#[test]
+fn test_a() {
+    let a_txt = "@123";
+    let a_ins = Instruction::a(a_txt.chars().peekable());
+
+    assert_eq!(a_ins, Instruction::A("123".to_string()));
+    assert_eq!(a_ins.to_string(), "0000000001111011")
 }
