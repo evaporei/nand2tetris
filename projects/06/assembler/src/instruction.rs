@@ -16,6 +16,8 @@ use std::fmt;
 
 impl fmt::Display for Instruction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "empty instruction")
+        match self {
+            Self::A(number) => write!(f, "{:b}", number.parse::<u16>().unwrap()),
+        }
     }
 }
