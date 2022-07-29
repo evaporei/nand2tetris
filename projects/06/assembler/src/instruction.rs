@@ -2,12 +2,13 @@ use std::iter::Peekable;
 use std::str::Chars;
 
 pub enum Instruction {
-    A,
+    A(String),
 }
 
 impl Instruction {
-    pub fn a(_chars: Peekable<Chars>) -> Self {
-        Instruction::A
+    pub fn a(chars: Peekable<Chars>) -> Self {
+        let symbol = chars.skip(1).collect();
+        Instruction::A(symbol)
     }
 }
 
