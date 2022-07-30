@@ -81,6 +81,23 @@ impl CInstruction {
         .parse()
         .unwrap()
     }
+
+    fn dest(d: &str) -> u16 {
+        match &d[..] {
+            "null" => "000",
+            "M" => "001",
+            "D" => "010",
+            "MD" => "011",
+            "A" => "100",
+            "AM" => "101",
+            "AD" => "110",
+            "AMD" => "111",
+            _ => panic!("non existent dest conversion"),
+        }
+        .to_string()
+        .parse()
+        .unwrap()
+    }
 }
 
 use std::fmt;
@@ -90,12 +107,16 @@ impl fmt::Display for Instruction {
         match self {
             Self::A(address) => write!(f, "0{:015b}", address.parse::<u16>().unwrap()),
             Self::C(CInstruction {
-                dest: _dest,
+                dest,
                 comp,
                 jump: _jump,
             }) => {
                 write!(f, "111")?;
-                write!(f, "{:06b}", CInstruction::comp(&comp))
+                write!(f, "{:06b}", CInstruction::comp(&comp))?;
+                if let Some(d) = dest {
+                    write!(f, "{:03b}", CInstruction::dest(&d))?;
+                }
+                Ok(())
             }
         }
     }
