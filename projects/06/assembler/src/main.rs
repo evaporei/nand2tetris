@@ -21,10 +21,13 @@ fn main() {
     let file = &args[0];
     let program = fs::read_to_string(file.clone()).expect("hack program doesn't exist");
 
-    let instructions = Parser::parse(program.lines());
+    let symbol_table = Parser::first_pass(program.lines());
+
+    let instructions = Parser::second_pass(program.lines(), symbol_table);
 
     let mut translated_file = File::create(format!("{}.hack", file_name(&file).unwrap()))
         .expect("failed to create translated file");
+
     for instruction in instructions {
         translated_file
             .write_all(instruction.as_bytes())

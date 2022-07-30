@@ -1,17 +1,28 @@
+use crate::symbol_table::SymbolTable;
 use std::str::Chars;
 
-type Symbol = String;
+type Address = u16;
 
 #[derive(Debug, PartialEq)]
 pub enum Instruction {
-    A(Symbol),
+    A(Address),
     C(CInstruction),
 }
 
 impl Instruction {
-    pub fn a(chars: Chars) -> Self {
-        let symbol = chars.skip(1).collect();
-        Instruction::A(symbol)
+    pub fn a(chars: Chars, symbol_table: &SymbolTable) -> Self {
+        let symbol: String = chars.skip(1).collect();
+        let maybe_address = symbol.parse::<u16>();
+
+        if maybe_address.is_ok() {
+            Instruction::A(maybe_address.unwrap())
+        } else {
+            let address = symbol_table
+                .get(&symbol)
+                .expect(&format!("didn't find variable {}", symbol));
+
+            Instruction::A(*address)
+        }
     }
 
     pub fn c(mut chars: Chars) -> Self {
@@ -37,9 +48,9 @@ impl Instruction {
 
 #[derive(Debug, PartialEq)]
 pub struct CInstruction {
-    dest: Option<Symbol>,
-    comp: Symbol,
-    jump: Option<Symbol>,
+    dest: Option<String>,
+    comp: String,
+    jump: Option<String>,
 }
 
 impl CInstruction {
@@ -78,8 +89,7 @@ impl CInstruction {
             _ => panic!("non existent comp conversion"),
         };
 
-        u16::from_str_radix(s, 2)
-            .unwrap()
+        u16::from_str_radix(s, 2).unwrap()
     }
 
     fn dest(d: &str) -> u16 {
@@ -95,8 +105,7 @@ impl CInstruction {
             _ => panic!("non existent dest conversion"),
         };
 
-        u16::from_str_radix(s, 2)
-            .unwrap()
+        u16::from_str_radix(s, 2).unwrap()
     }
 
     fn jump(j: &str) -> u16 {
@@ -112,8 +121,7 @@ impl CInstruction {
             _ => panic!("non existent jump conversion"),
         };
 
-        u16::from_str_radix(s, 2)
-            .unwrap()
+        u16::from_str_radix(s, 2).unwrap()
     }
 }
 
@@ -122,12 +130,20 @@ use std::fmt;
 impl fmt::Display for Instruction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::A(address) => write!(f, "0{:015b}", address.parse::<u16>().unwrap()),
+            Self::A(address) => write!(f, "0{:015b}", address),
             Self::C(CInstruction { dest, comp, jump }) => {
                 write!(f, "111")?;
                 write!(f, "{:07b}", CInstruction::comp(&comp))?;
-                write!(f, "{:03b}", CInstruction::dest(dest.as_ref().unwrap_or(&"null".to_string())))?;
-                write!(f, "{:03b}", CInstruction::jump(jump.as_ref().unwrap_or(&"null".to_string())))?;
+                write!(
+                    f,
+                    "{:03b}",
+                    CInstruction::dest(dest.as_ref().unwrap_or(&"null".to_string()))
+                )?;
+                write!(
+                    f,
+                    "{:03b}",
+                    CInstruction::jump(jump.as_ref().unwrap_or(&"null".to_string()))
+                )?;
                 Ok(())
             }
         }
@@ -136,10 +152,24 @@ impl fmt::Display for Instruction {
 
 #[test]
 fn test_a() {
-    let a_txt = "@123";
-    let a_ins = Instruction::a(a_txt.chars());
+    let empty_symbol_table = Default::default();
 
-    assert_eq!(a_ins, Instruction::A("123".to_string()));
+    let a_txt = "@123";
+    let a_ins = Instruction::a(a_txt.chars(), &empty_symbol_table);
+
+    assert_eq!(a_ins, Instruction::A(123));
+    assert_eq!(a_ins.to_string(), "0000000001111011");
+}
+
+#[test]
+fn test_a_in_symbol_table() {
+    let mut symbol_table = SymbolTable::new();
+    symbol_table.insert("VARIABLE".into(), 123);
+
+    let a_txt = "@VARIABLE";
+    let a_ins = Instruction::a(a_txt.chars(), &symbol_table);
+
+    assert_eq!(a_ins, Instruction::A(123));
     assert_eq!(a_ins.to_string(), "0000000001111011");
 }
 
