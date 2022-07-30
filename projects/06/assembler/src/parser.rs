@@ -15,8 +15,11 @@ impl Parser {
     fn line(instruction: &str) -> Option<Instruction> {
         let chars = instruction.chars();
         let mut peekable_chars = chars.clone().peekable();
+        let first = peekable_chars.peek().copied();
+        let second = peekable_chars.peek();
 
-        match peekable_chars.peek() {
+        match first {
+            Some('/') if second == Some(&'/') => None,
             Some('@') => Some(Instruction::a(chars)),
             Some(_c) => Some(Instruction::c(chars)),
             None => None,
