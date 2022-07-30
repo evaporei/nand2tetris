@@ -44,7 +44,7 @@ pub struct CInstruction {
 
 impl CInstruction {
     fn comp(c: &str) -> u16 {
-        match &c[..] {
+        let s = match &c[..] {
             // a = 0
             "0" => "0101010",
             "1" => "0111111",
@@ -76,14 +76,14 @@ impl CInstruction {
             "D&M" => "1000000",
             "D|M" => "1010101",
             _ => panic!("non existent comp conversion"),
-        }
-        .to_string()
-        .parse()
-        .unwrap()
+        };
+
+        u16::from_str_radix(s, 2)
+            .unwrap()
     }
 
     fn dest(d: &str) -> u16 {
-        match &d[..] {
+        let s = match &d[..] {
             "null" => "000",
             "M" => "001",
             "D" => "010",
@@ -93,14 +93,14 @@ impl CInstruction {
             "AD" => "110",
             "AMD" => "111",
             _ => panic!("non existent dest conversion"),
-        }
-        .to_string()
-        .parse()
-        .unwrap()
+        };
+
+        u16::from_str_radix(s, 2)
+            .unwrap()
     }
 
     fn jump(j: &str) -> u16 {
-        match &j[..] {
+        let s = match &j[..] {
             "null" => "000",
             "JGT" => "001",
             "JEQ" => "010",
@@ -110,10 +110,10 @@ impl CInstruction {
             "JLE" => "110",
             "JMP" => "111",
             _ => panic!("non existent jump conversion"),
-        }
-        .to_string()
-        .parse()
-        .unwrap()
+        };
+
+        u16::from_str_radix(s, 2)
+            .unwrap()
     }
 }
 
@@ -125,13 +125,9 @@ impl fmt::Display for Instruction {
             Self::A(address) => write!(f, "0{:015b}", address.parse::<u16>().unwrap()),
             Self::C(CInstruction { dest, comp, jump }) => {
                 write!(f, "111")?;
-                write!(f, "{:06b}", CInstruction::comp(&comp))?;
-                if let Some(d) = dest {
-                    write!(f, "{:03b}", CInstruction::dest(&d))?;
-                }
-                if let Some(j) = jump {
-                    write!(f, "{:03b}", CInstruction::jump(&j))?;
-                }
+                write!(f, "{:07b}", CInstruction::comp(&comp))?;
+                write!(f, "{:03b}", CInstruction::dest(dest.as_ref().unwrap_or(&"null".to_string())))?;
+                write!(f, "{:03b}", CInstruction::jump(jump.as_ref().unwrap_or(&"null".to_string())))?;
                 Ok(())
             }
         }
@@ -160,7 +156,7 @@ fn test_c_only_comp() {
             jump: None,
         })
     );
-    assert_eq!(c_ins.to_string(), "111");
+    assert_eq!(c_ins.to_string(), "1110000010000000");
 }
 
 #[test]
@@ -176,7 +172,7 @@ fn test_c_dest() {
             jump: None,
         })
     );
-    assert_eq!(c_ins.to_string(), "111");
+    assert_eq!(c_ins.to_string(), "1110000010001000");
 }
 
 #[test]
@@ -192,7 +188,7 @@ fn test_c_jump() {
             jump: Some("JLE".to_string()),
         })
     );
-    assert_eq!(c_ins.to_string(), "111");
+    assert_eq!(c_ins.to_string(), "1110000010000110");
 }
 
 #[test]
@@ -208,5 +204,5 @@ fn test_c_dest_jump() {
             jump: Some("JLE".to_string()),
         })
     );
-    assert_eq!(c_ins.to_string(), "111");
+    assert_eq!(c_ins.to_string(), "1110000010001110");
 }
