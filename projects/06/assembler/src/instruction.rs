@@ -21,7 +21,7 @@ impl Instruction {
                 .get(&symbol)
                 .expect(&format!("didn't find variable {}", symbol));
 
-            Instruction::A(*address)
+            Instruction::A(address)
         }
     }
 
@@ -163,14 +163,14 @@ fn test_a() {
 
 #[test]
 fn test_a_in_symbol_table() {
-    let mut symbol_table = SymbolTable::new();
-    symbol_table.insert("VARIABLE".into(), 123);
+    let mut symbol_table = SymbolTable::with_predefined();
+    symbol_table.insert("VARIABLE".into());
 
     let a_txt = "@VARIABLE";
     let a_ins = Instruction::a(a_txt.chars(), &symbol_table);
 
-    assert_eq!(a_ins, Instruction::A(123));
-    assert_eq!(a_ins.to_string(), "0000000001111011");
+    assert_eq!(a_ins, Instruction::A(16));
+    assert_eq!(a_ins.to_string(), "0000000000010000");
 }
 
 #[test]

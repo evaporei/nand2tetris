@@ -3,8 +3,6 @@ use std::str::Chars;
 
 pub type Address = u16;
 
-pub type SymbolTable = BTreeMap<String, Address>;
-
 pub struct Symbol {
     pub idx: u16,
     pub s: String,
@@ -26,34 +24,54 @@ impl Symbol {
     }
 }
 
-pub fn with_predefined() -> SymbolTable {
-    let mut st = SymbolTable::new();
+#[derive(Default)]
+pub struct SymbolTable {
+    map: BTreeMap<String, Address>,
+    next_address: u16,
+}
 
-    st.insert("SP".into(), 0);
-    st.insert("LCL".into(), 1);
-    st.insert("ARG".into(), 2);
-    st.insert("THIS".into(), 3);
-    st.insert("THAT".into(), 4);
+impl SymbolTable {
+    pub fn with_predefined() -> Self {
+        let mut map = BTreeMap::new();
 
-    st.insert("R0".into(), 0);
-    st.insert("R1".into(), 1);
-    st.insert("R2".into(), 2);
-    st.insert("R3".into(), 3);
-    st.insert("R4".into(), 4);
-    st.insert("R5".into(), 5);
-    st.insert("R6".into(), 6);
-    st.insert("R7".into(), 7);
-    st.insert("R8".into(), 8);
-    st.insert("R9".into(), 9);
-    st.insert("R10".into(), 10);
-    st.insert("R11".into(), 11);
-    st.insert("R12".into(), 12);
-    st.insert("R13".into(), 13);
-    st.insert("R14".into(), 14);
-    st.insert("R15".into(), 15);
+        map.insert("SP".into(), 0);
+        map.insert("LCL".into(), 1);
+        map.insert("ARG".into(), 2);
+        map.insert("THIS".into(), 3);
+        map.insert("THAT".into(), 4);
 
-    st.insert("SCREEN".into(), 16384);
-    st.insert("KBD".into(), 24576);
+        map.insert("R0".into(), 0);
+        map.insert("R1".into(), 1);
+        map.insert("R2".into(), 2);
+        map.insert("R3".into(), 3);
+        map.insert("R4".into(), 4);
+        map.insert("R5".into(), 5);
+        map.insert("R6".into(), 6);
+        map.insert("R7".into(), 7);
+        map.insert("R8".into(), 8);
+        map.insert("R9".into(), 9);
+        map.insert("R10".into(), 10);
+        map.insert("R11".into(), 11);
+        map.insert("R12".into(), 12);
+        map.insert("R13".into(), 13);
+        map.insert("R14".into(), 14);
+        map.insert("R15".into(), 15);
 
-    st
+        map.insert("SCREEN".into(), 16384);
+        map.insert("KBD".into(), 24576);
+
+        Self {
+            map,
+            next_address: 16,
+        }
+    }
+
+    pub fn insert(&mut self, symbol_s: String) {
+        self.map.insert(symbol_s, self.next_address);
+        self.next_address += 1;
+    }
+
+    pub fn get(&self, symbol_s: &String) -> Option<Address> {
+        self.map.get(symbol_s).copied()
+    }
 }

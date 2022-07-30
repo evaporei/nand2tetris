@@ -1,5 +1,5 @@
 use crate::instruction::Instruction;
-use crate::symbol_table::{self, Symbol, SymbolTable};
+use crate::symbol_table::{Symbol, SymbolTable};
 use std::str::Lines;
 
 pub struct Parser {}
@@ -10,8 +10,8 @@ impl Parser {
             .enumerate()
             .map(|(idx, inst)| Self::parse_symbol(idx, inst))
             .filter_map(|x| x)
-            .fold(symbol_table::with_predefined(), |mut acc, s| {
-                acc.insert(s.s, s.idx);
+            .fold(SymbolTable::with_predefined(), |mut acc, s| {
+                acc.insert(s.s);
                 acc
             })
     }
