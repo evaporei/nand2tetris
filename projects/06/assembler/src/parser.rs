@@ -13,9 +13,10 @@ impl Parser {
     }
 
     fn line(instruction: &str) -> Option<Instruction> {
-        let mut chars = instruction.chars().peekable();
+        let chars = instruction.chars();
+        let mut peekable_chars = chars.clone().peekable();
 
-        match chars.peek() {
+        match peekable_chars.peek() {
             Some('@') => Some(Instruction::a(chars)),
             Some(_c) => Some(Instruction::c(chars)),
             None => None,
