@@ -98,6 +98,23 @@ impl CInstruction {
         .parse()
         .unwrap()
     }
+
+    fn jump(j: &str) -> u16 {
+        match &j[..] {
+            "null" => "000",
+            "JGT" => "001",
+            "JEQ" => "010",
+            "JGE" => "011",
+            "JLT" => "100",
+            "JNE" => "101",
+            "JLE" => "110",
+            "JMP" => "111",
+            _ => panic!("non existent jump conversion"),
+        }
+        .to_string()
+        .parse()
+        .unwrap()
+    }
 }
 
 use std::fmt;
@@ -106,15 +123,14 @@ impl fmt::Display for Instruction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::A(address) => write!(f, "0{:015b}", address.parse::<u16>().unwrap()),
-            Self::C(CInstruction {
-                dest,
-                comp,
-                jump: _jump,
-            }) => {
+            Self::C(CInstruction { dest, comp, jump }) => {
                 write!(f, "111")?;
                 write!(f, "{:06b}", CInstruction::comp(&comp))?;
                 if let Some(d) = dest {
                     write!(f, "{:03b}", CInstruction::dest(&d))?;
+                }
+                if let Some(j) = jump {
+                    write!(f, "{:03b}", CInstruction::jump(&j))?;
                 }
                 Ok(())
             }
