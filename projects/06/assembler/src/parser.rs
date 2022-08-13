@@ -24,7 +24,8 @@ impl Parser {
 
         match first {
             Some('/') if second == Some(&'/') => None,
-            Some('@') => Symbol::new(idx, chars),
+            Some('@') => Symbol::variable(idx, chars),
+            Some('(') => Symbol::label(idx, chars),
             Some(_c) => None,
             None => None,
         }
@@ -47,6 +48,7 @@ impl Parser {
         match first {
             Some('/') if second == Some(&'/') => None,
             Some('@') => Some(Instruction::a(chars, symbol_table)),
+            Some('(') => None,
             Some(_c) => Some(Instruction::c(chars)),
             None => None,
         }

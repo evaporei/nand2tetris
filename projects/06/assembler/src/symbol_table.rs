@@ -3,13 +3,21 @@ use std::str::Chars;
 
 pub type Address = u16;
 
+#[derive(Debug)]
+pub enum SymbolKind {
+    Variable,
+    Label,
+}
+
+#[derive(Debug)]
 pub struct Symbol {
     pub idx: u16,
     pub s: String,
+    pub k: SymbolKind,
 }
 
 impl Symbol {
-    pub fn new(idx: usize, chars: Chars) -> Option<Self> {
+    pub fn variable(idx: usize, chars: Chars) -> Option<Self> {
         let idx = idx as u16;
         let maybe_symbol: String = chars.skip(1).collect();
 
@@ -17,10 +25,24 @@ impl Symbol {
             Some(Symbol {
                 idx,
                 s: maybe_symbol,
+                k: SymbolKind::Variable,
             })
         } else {
             None
         }
+    }
+
+    pub fn label(idx: usize, chars: Chars) -> Option<Self> {
+        let idx = idx as u16;
+        let mut s: String = chars.skip(1).collect();
+
+        s.remove(s.len() - 1); // closing paren )
+
+        Some(Symbol {
+            idx,
+            s,
+            k: SymbolKind::Label,
+        })
     }
 }
 
