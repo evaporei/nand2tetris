@@ -17,7 +17,7 @@ impl Parser {
     }
 
     fn parse_symbol(idx: usize, instruction: &str) -> Option<Symbol> {
-        let chars = instruction.chars();
+        let chars = instruction.trim().chars();
         let mut peekable_chars = chars.clone().peekable();
         let first = peekable_chars.peek().copied();
         let second = peekable_chars.peek();
@@ -39,7 +39,7 @@ impl Parser {
     }
 
     fn parse_line(instruction: &str, symbol_table: &SymbolTable) -> Option<Instruction> {
-        let chars = instruction.chars();
+        let chars = instruction.trim().chars();
         let mut peekable_chars = chars.clone().peekable();
         let first = peekable_chars.peek().copied();
         let second = peekable_chars.peek();
