@@ -86,7 +86,7 @@ impl CInstruction {
             "M-D" => "1000111",
             "D&M" => "1000000",
             "D|M" => "1010101",
-            _ => panic!("non existent comp conversion"),
+            _ => panic!("non existent comp conversion {}", c),
         };
 
         u16::from_str_radix(s, 2).unwrap()
@@ -102,7 +102,7 @@ impl CInstruction {
             "AM" => "101",
             "AD" => "110",
             "AMD" => "111",
-            _ => panic!("non existent dest conversion"),
+            _ => panic!("non existent dest conversion {}", d),
         };
 
         u16::from_str_radix(s, 2).unwrap()
@@ -118,7 +118,7 @@ impl CInstruction {
             "JNE" => "101",
             "JLE" => "110",
             "JMP" => "111",
-            _ => panic!("non existent jump conversion"),
+            _ => panic!("non existent jump conversion {}", j),
         };
 
         u16::from_str_radix(s, 2).unwrap()
