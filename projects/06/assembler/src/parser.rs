@@ -16,7 +16,7 @@ impl Parser {
             })
     }
 
-    fn parse_symbol(idx: usize, instruction: &str) -> Option<Symbol> {
+    pub fn parse_symbol(idx: usize, instruction: &str) -> Option<Symbol> {
         let chars = instruction.trim().chars();
         let mut peekable_chars = chars.clone().peekable();
         let first = peekable_chars.peek().copied();
@@ -53,4 +53,20 @@ impl Parser {
             None => None,
         }
     }
+}
+
+#[cfg(test)]
+use crate::symbol_table::SymbolKind;
+
+#[test]
+fn test_parse_symbol() {
+    let symbol = Parser::parse_symbol(0, "@R0").unwrap();
+    assert_eq!(
+        symbol,
+        Symbol {
+            idx: 0,
+            s: "R0".into(),
+            k: SymbolKind::Variable,
+        }
+    );
 }

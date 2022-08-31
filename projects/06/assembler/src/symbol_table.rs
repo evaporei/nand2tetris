@@ -3,13 +3,13 @@ use std::str::Chars;
 
 pub type Address = u16;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum SymbolKind {
     Variable,
     Label,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Symbol {
     pub idx: u16,
     pub s: String,
