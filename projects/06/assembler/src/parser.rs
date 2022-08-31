@@ -70,3 +70,16 @@ fn test_parse_symbol() {
         }
     );
 }
+
+#[test]
+fn test_parse_symbol_trim() {
+    let symbol = Parser::parse_symbol(0, "  \n\t  @R0   \n  ").unwrap();
+    assert_eq!(
+        symbol,
+        Symbol {
+            idx: 0,
+            s: "R0".into(),
+            k: SymbolKind::Variable,
+        }
+    );
+}
