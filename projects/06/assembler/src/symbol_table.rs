@@ -19,6 +19,8 @@ impl Symbol {
     pub fn variable(idx: usize, s: String) -> Option<Self> {
         let idx = idx as u16;
 
+        // dbg!("variable", &s, idx);
+
         if s.parse::<u16>().is_err() {
             Some(Symbol {
                 idx,
@@ -35,6 +37,8 @@ impl Symbol {
 
         s.remove(s.len() - 1); // closing paren )
 
+        // dbg!("label", &s, idx);
+
         Some(Symbol {
             idx,
             s: s.to_owned(),
@@ -43,7 +47,7 @@ impl Symbol {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct SymbolTable {
     map: BTreeMap<String, Address>,
     next_address: u16,
@@ -86,8 +90,15 @@ impl SymbolTable {
     }
 
     pub fn insert(&mut self, symbol_s: String) {
-        self.map.insert(symbol_s, self.next_address);
-        self.next_address += 1;
+        // Here we only add the first occurence of the variable.
+        // It will not be overwritten.
+        self.map.entry(symbol_s).or_insert_with(|| {
+            // We only update the `next_address` if a new variable
+            // was inserted.
+            let addr = self.next_address;
+            self.next_address += 1;
+            addr
+        });
     }
 
     pub fn get(&self, symbol_s: &String) -> Option<Address> {

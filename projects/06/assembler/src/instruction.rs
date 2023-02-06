@@ -18,7 +18,7 @@ impl Instruction {
             let address = symbol_table
                 .get(&chars)
                 .expect(&format!("didn't find variable {}", chars));
-
+            
             Instruction::A(address)
         }
     }

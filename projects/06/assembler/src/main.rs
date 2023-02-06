@@ -21,9 +21,9 @@ fn main() {
     let file = &args[0];
     let program = fs::read_to_string(file.clone()).expect("hack program doesn't exist");
 
-    let symbol_table = Parser::first_pass(program.lines());
+    let (lines, symbol_table) = Parser::first_pass(program.lines());
 
-    let instructions = Parser::second_pass(program.lines(), symbol_table);
+    let instructions = Parser::second_pass(lines, symbol_table);
 
     let mut translated_file = File::create(format!("{}.hack", file_name(&file).unwrap()))
         .expect("failed to create translated file");
