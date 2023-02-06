@@ -1,5 +1,4 @@
 use crate::symbol_table::SymbolTable;
-use std::str::Chars;
 
 type Address = u16;
 
@@ -10,22 +9,22 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub fn a(chars: Chars, symbol_table: &SymbolTable) -> Self {
-        let symbol: String = chars.skip(1).collect();
-        let maybe_address = symbol.parse::<u16>();
+    pub fn a(chars: String, symbol_table: &SymbolTable) -> Self {
+        let maybe_address = chars.parse::<u16>();
 
         if maybe_address.is_ok() {
             Instruction::A(maybe_address.unwrap())
         } else {
             let address = symbol_table
-                .get(&symbol)
-                .expect(&format!("didn't find variable {}", symbol));
+                .get(&chars)
+                .expect(&format!("didn't find variable {}", chars));
 
             Instruction::A(address)
         }
     }
 
-    pub fn c(mut chars: Chars) -> Self {
+    pub fn c(chars: String) -> Self {
+        let mut chars = chars.chars();
         let dest = if let Some(idx) = chars.clone().position(|ch| ch == '=') {
             let d = Some(chars.by_ref().take(idx).collect::<String>());
             let _ = chars.next(); // skip '='
@@ -154,8 +153,8 @@ impl fmt::Display for Instruction {
 fn test_a() {
     let empty_symbol_table = Default::default();
 
-    let a_txt = "@123";
-    let a_ins = Instruction::a(a_txt.chars(), &empty_symbol_table);
+    let a_txt = "123".to_owned();
+    let a_ins = Instruction::a(a_txt, &empty_symbol_table);
 
     assert_eq!(a_ins, Instruction::A(123));
     assert_eq!(a_ins.to_string(), "0000000001111011");
@@ -166,8 +165,8 @@ fn test_a_in_symbol_table() {
     let mut symbol_table = SymbolTable::with_predefined();
     symbol_table.insert("VARIABLE".into());
 
-    let a_txt = "@VARIABLE";
-    let a_ins = Instruction::a(a_txt.chars(), &symbol_table);
+    let a_txt = "VARIABLE".to_owned();
+    let a_ins = Instruction::a(a_txt, &symbol_table);
 
     assert_eq!(a_ins, Instruction::A(16));
     assert_eq!(a_ins.to_string(), "0000000000010000");
@@ -175,8 +174,8 @@ fn test_a_in_symbol_table() {
 
 #[test]
 fn test_c_only_comp() {
-    let c_txt = "D+A";
-    let c_ins = Instruction::c(c_txt.chars());
+    let c_txt = "D+A".to_owned();
+    let c_ins = Instruction::c(c_txt);
 
     assert_eq!(
         c_ins,
@@ -191,8 +190,8 @@ fn test_c_only_comp() {
 
 #[test]
 fn test_c_dest() {
-    let c_txt = "M=D+A";
-    let c_ins = Instruction::c(c_txt.chars());
+    let c_txt = "M=D+A".to_owned();
+    let c_ins = Instruction::c(c_txt);
 
     assert_eq!(
         c_ins,
@@ -207,8 +206,8 @@ fn test_c_dest() {
 
 #[test]
 fn test_c_jump() {
-    let c_txt = "D+A;JLE";
-    let c_ins = Instruction::c(c_txt.chars());
+    let c_txt = "D+A;JLE".to_owned();
+    let c_ins = Instruction::c(c_txt);
 
     assert_eq!(
         c_ins,
@@ -223,8 +222,8 @@ fn test_c_jump() {
 
 #[test]
 fn test_c_dest_jump() {
-    let c_txt = "M=D+A;JLE";
-    let c_ins = Instruction::c(c_txt.chars());
+    let c_txt = "M=D+A;JLE".to_owned();
+    let c_ins = Instruction::c(c_txt);
 
     assert_eq!(
         c_ins,

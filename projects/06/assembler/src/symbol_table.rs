@@ -1,5 +1,4 @@
 use std::collections::BTreeMap;
-use std::str::Chars;
 
 pub type Address = u16;
 
@@ -17,14 +16,13 @@ pub struct Symbol {
 }
 
 impl Symbol {
-    pub fn variable(idx: usize, chars: Chars) -> Option<Self> {
+    pub fn variable(idx: usize, s: String) -> Option<Self> {
         let idx = idx as u16;
-        let maybe_symbol: String = chars.skip(1).collect();
 
-        if maybe_symbol.parse::<u16>().is_err() {
+        if s.parse::<u16>().is_err() {
             Some(Symbol {
                 idx,
-                s: maybe_symbol,
+                s,
                 k: SymbolKind::Variable,
             })
         } else {
@@ -32,15 +30,14 @@ impl Symbol {
         }
     }
 
-    pub fn label(idx: usize, chars: Chars) -> Option<Self> {
+    pub fn label(idx: usize, mut s: String) -> Option<Self> {
         let idx = idx as u16;
-        let mut s: String = chars.skip(1).collect();
 
         s.remove(s.len() - 1); // closing paren )
 
         Some(Symbol {
             idx,
-            s,
+            s: s.to_owned(),
             k: SymbolKind::Label,
         })
     }

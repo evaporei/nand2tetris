@@ -17,13 +17,13 @@ impl Parser {
     }
 
     pub fn parse_symbol(idx: usize, instruction: &str) -> Option<Symbol> {
-        let chars = instruction.trim().chars();
-        let mut peekable_chars = chars.clone().peekable();
-        let first = peekable_chars.peek().copied();
-        let second = peekable_chars.peek();
+        let mut instruction = instruction.trim_start().chars();
+        let first = instruction.nth(0);
+        let chars: String = instruction.take_while(|&ch| ch != '/').collect();
+        let chars = chars.trim_end().to_owned();
 
         match first {
-            Some('/') if second == Some(&'/') => None,
+            Some('/') => None,
             Some('@') => Symbol::variable(idx, chars),
             Some('(') => Symbol::label(idx, chars),
             Some(_c) => None,
@@ -40,16 +40,19 @@ impl Parser {
     }
 
     fn parse_line(instruction: &str, symbol_table: &SymbolTable) -> Option<Instruction> {
-        let chars = instruction.trim().chars();
-        let mut peekable_chars = chars.clone().peekable();
-        let first = peekable_chars.peek().copied();
-        let second = peekable_chars.peek();
+        let mut instruction = instruction.trim_start().chars();
+        let first = instruction.nth(0);
+        let chars: String = instruction.take_while(|&ch| ch != '/').collect();
+        let mut chars = chars.trim_end().to_owned();
 
         match first {
-            Some('/') if second == Some(&'/') => None,
+            Some('/') => None,
             Some('@') => Some(Instruction::a(chars, symbol_table)),
             Some('(') => None,
-            Some(_c) => Some(Instruction::c(chars)),
+            Some(c) => {
+                chars.insert(0, c);
+                Some(Instruction::c(chars))
+            }
             None => None,
         }
     }
@@ -74,6 +77,28 @@ fn test_parse_symbol() {
 #[test]
 fn test_parse_symbol_trim() {
     let symbol = Parser::parse_symbol(0, "  \n\t  @R0   \n  ").unwrap();
+    assert_eq!(
+        symbol,
+        Symbol {
+            idx: 0,
+            s: "R0".into(),
+            k: SymbolKind::Variable,
+        }
+    );
+}
+
+#[test]
+fn test_parse_symbol_comment() {
+    let symbol = Parser::parse_symbol(0, "@R0 // hello  ").unwrap();
+    assert_eq!(
+        symbol,
+        Symbol {
+            idx: 0,
+            s: "R0".into(),
+            k: SymbolKind::Variable,
+        }
+    );
+    let symbol = Parser::parse_symbol(0, "  @R0//hello  ").unwrap();
     assert_eq!(
         symbol,
         Symbol {
