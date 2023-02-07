@@ -25,7 +25,7 @@ fn main() {
 
     let instructions = Parser::second_pass(lines, symbol_table);
 
-    let mut translated_file = File::create(format!("{}.hack", file_name(&file).unwrap()))
+    let mut translated_file = File::create(format!("programs/{}.hack", file_name(&file).unwrap()))
         .expect("failed to create translated file");
 
     for instruction in instructions {
