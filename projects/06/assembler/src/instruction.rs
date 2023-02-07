@@ -2,6 +2,11 @@ use crate::symbol_table::SymbolTable;
 
 type Address = u16;
 
+pub enum InstrKind {
+    A,
+    C,
+}
+
 #[derive(Debug, PartialEq)]
 pub enum Instruction {
     A(Address),

@@ -19,8 +19,6 @@ impl Symbol {
     pub fn variable(idx: usize, s: String) -> Option<Self> {
         let idx = idx as u16;
 
-        // dbg!("variable", &s, idx);
-
         if s.parse::<u16>().is_err() {
             Some(Symbol {
                 idx,
@@ -36,8 +34,6 @@ impl Symbol {
         let idx = idx as u16;
 
         s.remove(s.len() - 1); // closing paren )
-
-        // dbg!("label", &s, idx);
 
         Some(Symbol {
             idx,
