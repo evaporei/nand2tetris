@@ -18,7 +18,7 @@ impl Instruction {
             let address = symbol_table
                 .get(&chars)
                 .expect(&format!("didn't find variable {}", chars));
-            
+
             Instruction::A(address)
         }
     }
@@ -162,8 +162,10 @@ fn test_a() {
 
 #[test]
 fn test_a_in_symbol_table() {
+    use crate::symbol_table::Symbol;
+
     let mut symbol_table = SymbolTable::with_predefined();
-    symbol_table.insert("VARIABLE".into());
+    symbol_table.insert(Symbol::variable(0, "VARIABLE".into()).unwrap());
 
     let a_txt = "VARIABLE".to_owned();
     let a_ins = Instruction::a(a_txt, &symbol_table);

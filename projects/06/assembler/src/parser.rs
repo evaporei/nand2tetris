@@ -7,19 +7,23 @@ pub struct Parser {}
 impl Parser {
     pub fn first_pass(program_lines: Lines) -> (Vec<&str>, SymbolTable) {
         // dbg!(" ---- FIRST PASS ---- ");
-        let (_, lines, symbol_table) = program_lines
-            .fold((0, vec![], SymbolTable::with_predefined()), |(mut idx, mut lines, mut acc), instr| {
+        let (_, lines, symbol_table) = program_lines.fold(
+            (0, vec![], SymbolTable::with_predefined()),
+            |(mut idx, mut lines, mut acc), instr| {
                 let (was_instr, symbol) = Self::parse_symbol(idx, instr);
                 if was_instr {
                     idx += 1;
                     lines.push(instr)
                 }
                 if let Some(s) = symbol {
-                    acc.insert(s.s);
+                    // dbg!("it's a label!", &s.s);
+                    acc.insert(s);
                 }
                 (idx, lines, acc)
-            });
-        
+            },
+        );
+        // dbg!(&lines);
+        // dbg!(&symbol_table);
         (lines, symbol_table)
     }
 
@@ -32,9 +36,9 @@ impl Parser {
 
         match first {
             Some('/') => (false, None),
-            Some('@') => (true, None),// variables are handled in second pass
-            Some('(') => (true, Symbol::label(idx, chars)),
-            Some(_c) => (true, None),// c-instruction
+            Some('@') => (true, None), // variables are handled in second pass
+            Some('(') => (false, Symbol::label(idx, chars)), // it's not an instruction
+            Some(_c) => (true, None),  // c-instruction
             None => (false, None),
         }
     }
@@ -50,7 +54,13 @@ impl Parser {
             .collect()
     }
 
-    fn parse_line(instruction: &str, idx: usize, symbol_table: &mut SymbolTable) -> Option<Instruction> {
+    fn parse_line(
+        instruction: &str,
+        idx: usize,
+        symbol_table: &mut SymbolTable,
+    ) -> Option<Instruction> {
+        // dbg!(idx);
+        // dbg!(instruction);
         let mut instruction = instruction.trim_start().chars();
         let first = instruction.nth(0);
         let chars: String = instruction.take_while(|&ch| ch != '/').collect();
@@ -58,11 +68,12 @@ impl Parser {
 
         match first {
             Some('@') => {
-                if let Some(_var) = Symbol::variable(idx, chars.clone()) {
-                    symbol_table.insert(chars.clone());
+                if let Some(var) = Symbol::variable(idx, chars.clone()) {
+                    // dbg!("hhh");
+                    symbol_table.insert(var);
                 }
                 Some(Instruction::a(chars, symbol_table))
-            },
+            }
             Some('(') => None,
             Some(c) => {
                 chars.insert(0, c);

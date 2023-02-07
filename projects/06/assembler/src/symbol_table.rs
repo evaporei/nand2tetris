@@ -89,16 +89,23 @@ impl SymbolTable {
         }
     }
 
-    pub fn insert(&mut self, symbol_s: String) {
-        // Here we only add the first occurence of the variable.
-        // It will not be overwritten.
-        self.map.entry(symbol_s).or_insert_with(|| {
-            // We only update the `next_address` if a new variable
-            // was inserted.
-            let addr = self.next_address;
-            self.next_address += 1;
-            addr
-        });
+    pub fn insert(&mut self, symbol: Symbol) {
+        match symbol.k {
+            SymbolKind::Variable => {
+                // Here we only add the first occurence of the variable.
+                // It will not be overwritten.
+                self.map.entry(symbol.s).or_insert_with(|| {
+                    // We only update the `next_address` if a new variable
+                    // was inserted.
+                    let addr = self.next_address;
+                    self.next_address += 1;
+                    addr
+                });
+            }
+            SymbolKind::Label => {
+                self.map.insert(symbol.s, symbol.idx);
+            }
+        }
     }
 
     pub fn get(&self, symbol_s: &String) -> Option<Address> {
