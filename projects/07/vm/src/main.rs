@@ -19,16 +19,14 @@ fn main() {
     let file = &args[0];
     let program = fs::read_to_string(file.clone()).expect("vm program doesn't exist");
 
-    let parser = Parser::new(program.lines());
-
-    let instructions: Vec<String> = parser.parse();
+    let instructions = Parser::parse(program.lines());
 
     let mut translated_file = File::create(format!("{}.asm", file_name(&file).unwrap()))
         .expect("failed to create assembly file");
 
     for instruction in instructions {
         translated_file
-            .write_all(instruction.as_bytes())
+            .write_all(instruction.to_string().as_bytes())
             .expect("failed to write instruction to translated file");
 
         translated_file
