@@ -7,6 +7,7 @@ pub enum Instr {
     Neg,
     And,
     Or,
+    Not,
 }
 
 pub enum Segment {
@@ -83,6 +84,14 @@ D=M
 M=M-1
 A=M
 M=D|M
+@SP
+M=M+1"
+                .into(),
+            Self::Not => "\
+@SP
+M=M-1
+A=M
+M=!M
 @SP
 M=M+1"
                 .into(),

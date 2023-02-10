@@ -36,6 +36,7 @@ impl Parser {
             Some("neg") => Some(Instr::Neg),
             Some("and") => Some(Instr::And),
             Some("or") => Some(Instr::Or),
+            Some("not") => Some(Instr::Not),
             Some(s) => {
                 if s.starts_with("/") {
                     None
