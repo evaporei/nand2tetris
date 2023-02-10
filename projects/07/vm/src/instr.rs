@@ -5,6 +5,7 @@ pub enum Instr {
     Add,
     Sub,
     Neg,
+    And,
 }
 
 pub enum Segment {
@@ -26,6 +27,7 @@ M=D
 M=M+1"
                 ),
             },
+            // arithmetic
             Self::Add => "\
 @SP
 M=M-1
@@ -55,6 +57,19 @@ M=M+1"
 M=M-1
 A=M
 M=-M
+@SP
+M=M+1"
+                .into(),
+            // logical
+            Self::And => "\
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+M=D&M
 @SP
 M=M+1"
                 .into(),
