@@ -3,6 +3,7 @@ use std::fmt;
 pub enum Instr {
     Push(Segment, u16),
     Add,
+    Sub,
 }
 
 pub enum Segment {
@@ -33,6 +34,18 @@ D=M
 M=M-1
 A=M
 M=D+M
+@SP
+M=M+1"
+                .into(),
+            Self::Sub => "\
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+M=M-D
 @SP
 M=M+1"
                 .into(),

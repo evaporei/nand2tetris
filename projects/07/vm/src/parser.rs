@@ -32,6 +32,7 @@ impl Parser {
                 Some(Instr::Push(segment, i))
             }
             Some("add") => Some(Instr::Add),
+            Some("sub") => Some(Instr::Sub),
             Some(s) => {
                 if s.starts_with("/") {
                     None
