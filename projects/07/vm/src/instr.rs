@@ -24,7 +24,18 @@ M=D
 M=M+1"
                 ),
             },
-            Self::Add => "add".into(),
+            Self::Add => "\
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+M=D+M
+@SP
+M=M+1"
+                .into(),
         };
 
         write!(f, "{}", s)
