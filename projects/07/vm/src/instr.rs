@@ -4,6 +4,7 @@ pub enum Instr {
     Push(Segment, u16),
     Add,
     Sub,
+    Neg,
 }
 
 pub enum Segment {
@@ -46,6 +47,14 @@ D=M
 M=M-1
 A=M
 M=M-D
+@SP
+M=M+1"
+                .into(),
+            Self::Neg => "\
+@SP
+M=M-1
+A=M
+M=-M
 @SP
 M=M+1"
                 .into(),
