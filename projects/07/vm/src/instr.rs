@@ -5,6 +5,7 @@ pub enum Instr {
     Add,
     Sub,
     Neg,
+    Eq,
     And,
     Or,
     Not,
@@ -63,6 +64,31 @@ M=-M
 M=M+1"
                 .into(),
             // logical
+            Self::Eq => "\
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D-M
+@LOGICAL_EQ_BODY
+D;JEQ
+
+// (IF-else) -> no equality found
+M=-1
+@LOGICAL_EQ_END
+0;JMP
+
+// (IF-then) it's equal to zero, which means equality
+(LOGICAL_EQ_BODY)
+M=0
+
+(LOGICAL_EQ_END)
+@SP
+M=M+1"
+                .into(),
             Self::And => "\
 @SP
 M=M-1
