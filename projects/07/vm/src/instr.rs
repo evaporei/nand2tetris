@@ -7,6 +7,7 @@ pub enum Instr {
     Neg,
     Eq,
     Gt,
+    Lt,
     And,
     Or,
     Not,
@@ -112,6 +113,31 @@ M=-1
 M=0
 
 (LOGICAL_GT_END)
+@SP
+M=M+1"
+                .into(),
+            Self::Lt => "\
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D-M
+@LOGICAL_LT_BODY
+D;JLE
+
+// (IF-else) -> no less than found
+M=-1
+@LOGICAL_LT_END
+0;JMP
+
+// (IF-then) it's less than or equal to zero
+(LOGICAL_LT_BODY)
+M=0
+
+(LOGICAL_LT_END)
 @SP
 M=M+1"
                 .into(),

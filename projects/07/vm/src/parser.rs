@@ -36,6 +36,7 @@ impl Parser {
             Some("neg") => Some(Instr::Neg),
             Some("eq") => Some(Instr::Eq),
             Some("gt") => Some(Instr::Gt),
+            Some("lt") => Some(Instr::Lt),
             Some("and") => Some(Instr::And),
             Some("or") => Some(Instr::Or),
             Some("not") => Some(Instr::Not),
