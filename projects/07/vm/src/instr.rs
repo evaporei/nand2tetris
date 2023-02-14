@@ -6,6 +6,7 @@ pub enum Instr {
     Sub,
     Neg,
     Eq,
+    Gt,
     And,
     Or,
     Not,
@@ -86,6 +87,31 @@ M=-1
 M=0
 
 (LOGICAL_EQ_END)
+@SP
+M=M+1"
+                .into(),
+            Self::Gt => "\
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D-M
+@LOGICAL_GT_BODY
+D;JGE
+
+// (IF-else) -> no greater than found
+M=-1
+@LOGICAL_GT_END
+0;JMP
+
+// (IF-then) it's greater than or equal to zero
+(LOGICAL_GT_BODY)
+M=0
+
+(LOGICAL_GT_END)
 @SP
 M=M+1"
                 .into(),
