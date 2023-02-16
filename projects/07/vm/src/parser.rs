@@ -6,12 +6,13 @@ pub struct Parser;
 impl Parser {
     pub fn parse(lines: Lines) -> Vec<Instr> {
         lines
-            .map(|line| Self::parse_line(line))
+            .enumerate()
+            .map(|(i, line)| Self::parse_line(i, line))
             .filter_map(|x| x)
             .collect()
     }
 
-    fn parse_line(line: &str) -> Option<Instr> {
+    fn parse_line(i: usize, line: &str) -> Option<Instr> {
         let trimmed = line.trim().chars();
         let chars: String = trimmed.take_while(|&ch| ch != '/').collect();
         let mut splitted = chars.split_whitespace();
@@ -34,9 +35,9 @@ impl Parser {
             Some("add") => Some(Instr::Add),
             Some("sub") => Some(Instr::Sub),
             Some("neg") => Some(Instr::Neg),
-            Some("eq") => Some(Instr::Eq),
-            Some("gt") => Some(Instr::Gt),
-            Some("lt") => Some(Instr::Lt),
+            Some("eq") => Some(Instr::Eq(i)),
+            Some("gt") => Some(Instr::Gt(i)),
+            Some("lt") => Some(Instr::Lt(i)),
             Some("and") => Some(Instr::And),
             Some("or") => Some(Instr::Or),
             Some("not") => Some(Instr::Not),
