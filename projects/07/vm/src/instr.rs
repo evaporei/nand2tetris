@@ -80,12 +80,16 @@ D=D-M
 D;JEQ
 
 // (IF-else) -> no equality found
+@SP
+A=M
 M=-1
 @LOGICAL_EQ_END_{i}
 0;JMP
 
 // (IF-then) it's equal to zero, which means equality
 (LOGICAL_EQ_BODY_{i})
+@SP
+A=M
 M=0
 
 (LOGICAL_EQ_END_{i})
@@ -106,12 +110,16 @@ D=D-M
 D;JGE
 
 // (IF-else) -> no greater than found
+@SP
+A=M
 M=-1
 @LOGICAL_GT_END_{i}
 0;JMP
 
 // (IF-then) it's greater than or equal to zero
 (LOGICAL_GT_BODY_{i})
+@SP
+A=M
 M=0
 
 (LOGICAL_GT_END_{i})
@@ -132,12 +140,16 @@ D=D-M
 D;JLE
 
 // (IF-else) -> no less than found
+@SP
+A=M
 M=-1
 @LOGICAL_LT_END_{i}
 0;JMP
 
 // (IF-then) it's less than or equal to zero
 (LOGICAL_LT_BODY_{i})
+@SP
+A=M
 M=0
 
 (LOGICAL_LT_END_{i})
