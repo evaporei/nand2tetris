@@ -136,21 +136,21 @@ D=M
 M=M-1
 A=M
 D=D-M
-@LOGICAL_LT_BODY_{i}
+@LOGICAL_LT_ELSE_{i}
 D;JLE
 
-// (IF-else) -> no less than found
-@SP
-A=M
-M=-1
-@LOGICAL_LT_END_{i}
-0;JMP
-
 // (IF-then) it's less than or equal to zero
-(LOGICAL_LT_BODY_{i})
 @SP
 A=M
 M=0
+@LOGICAL_LT_END_{i}
+0;JMP
+
+// (IF-else) -> no less than found
+(LOGICAL_LT_ELSE_{i})
+@SP
+A=M
+M=-1
 
 (LOGICAL_LT_END_{i})
 @SP
