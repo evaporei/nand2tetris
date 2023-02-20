@@ -106,21 +106,21 @@ D=M
 M=M-1
 A=M
 D=D-M
-@LOGICAL_GT_BODY_{i}
+@LOGICAL_GT_ELSE_{i}
 D;JGE
 
-// (IF-else) -> no greater than found
-@SP
-A=M
-M=-1
-@LOGICAL_GT_END_{i}
-0;JMP
-
 // (IF-then) it's greater than or equal to zero
-(LOGICAL_GT_BODY_{i})
 @SP
 A=M
 M=0
+@LOGICAL_GT_END_{i}
+0;JMP
+
+// (IF-else) -> no greater than found
+(LOGICAL_GT_ELSE_{i})
+@SP
+A=M
+M=-1
 
 (LOGICAL_GT_END_{i})
 @SP
