@@ -5,41 +5,118 @@
 
 // Executes a sequence of arithmetic and logical operations
 // on the stack. 
+
+// SP 256 -> 257
+// @256 = 17
 push constant 17
+// SP 257 -> 258
+// @257 = 17
 push constant 17
+// SP 258 -> 257
+// @256 = 0
 eq
+// SP 257 -> 258
+// @257 = 17
 push constant 17
+// SP 258 -> 259
+// @258 = 16
 push constant 16
+// SP 259 -> 258
+// @257 = -1
 eq
+// SP 258 -> 259
+// @258 = 16
 push constant 16
+// SP 259 -> 260
+// @259 = 17
 push constant 17
+// SP 260 -> 259
+// @258 = -1
 eq
+// SP 259 -> 260
+// @259 = 892
 push constant 892
+// SP 260 -> 261
+// @260 = 891
 push constant 891
+// SP 261 -> 260
+// @259 = -1
 lt
+// SP 260 -> 261
+// @260 = 891
 push constant 891
+// SP 261 -> 262
+// @261 = 892
 push constant 892
+// SP 262 -> 261
+// @260 = 0
 lt
+// SP 261 -> 262
+// @261 = 891
 push constant 891
+// SP 262 -> 263
+// @262 = 891
 push constant 891
+// SP 263 -> 262
+// @261 = -1
 lt
+// SP 262 -> 263
+// @262 = 32767
 push constant 32767
+// SP 263 -> 264
+// @263 = 32766
 push constant 32766
+// SP 264 -> 263
+// @262 = 0
 gt
+// SP 263 -> 264
+// @263 = 32766
 push constant 32766
+// SP 264 -> 265
+// @264 = 32767
 push constant 32767
+// SP 265 -> 264
+// @263 = -1
 gt
+// SP 264 -> 265
+// @264 = 32766
 push constant 32766
+// SP 265 -> 266
+// @265 = 32766
 push constant 32766
+// SP 266 -> 265
+// @264 = -1
 gt
+// SP 265 -> 266
+// @265 = 57
 push constant 57
+// SP 266 -> 267
+// @266 = 31
 push constant 31
+// SP 267 -> 268
+// @267 = 53
 push constant 53
+// SP 268 -> 267
+// @267 = 84
 add
+// SP 267 -> 268
+// @267 = 112
 push constant 112
+// SP 268 -> 267
+// @266 = -28
 sub
+// SP 267 -> 267
+// @266 = 28
 neg
+// SP 267 -> 266
+// @265 = 24
 and
+// SP 266 -> 267
+// @266 = 82
 push constant 82
+// SP 267 -> 266
+// @265 = 90
 or
+// SP 266 -> 266
+// @265 = -91
 not
