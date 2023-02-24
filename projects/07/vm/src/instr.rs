@@ -39,11 +39,8 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
-M=D+M
-@SP
-M=M+1"
+A=M-1
+M=D+M"
                 .into(),
             Self::Sub => "\
 @SP
@@ -51,11 +48,8 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
-M=M-D
-@SP
-M=M+1"
+A=M-1
+M=M-D"
                 .into(),
             Self::Neg => "\
 @SP
@@ -162,11 +156,8 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
-M=D&M
-@SP
-M=M+1"
+A=M-1
+M=D&M"
                 .into(),
             Self::Or => "\
 @SP
@@ -174,11 +165,8 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
-M=D|M
-@SP
-M=M+1"
+A=M-1
+M=D|M"
                 .into(),
             Self::Not => "\
 @SP
