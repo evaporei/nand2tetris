@@ -26,7 +26,7 @@ fn main() {
 
     for instruction in instructions {
         translated_file
-            .write_all(instruction.to_string().as_bytes())
+            .write_all(instruction.to_assembly(file_name(file).unwrap()).as_bytes())
             .expect("failed to write instruction to translated file");
 
         translated_file

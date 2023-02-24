@@ -1,2 +1,2 @@
-mod instr;
+pub mod instr;
 pub mod parser;

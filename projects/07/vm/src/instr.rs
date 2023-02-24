@@ -1,5 +1,3 @@
-use std::fmt;
-
 pub enum Instr {
     Push(Segment, u16),
     Pop(Segment, u16),
@@ -26,9 +24,11 @@ pub enum Segment {
     Static,
 }
 
-impl fmt::Display for Instr {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let s = match self {
+pub type ASMCode = String;
+
+impl Instr {
+    pub fn to_assembly(self, file_name: String) -> ASMCode {
+        match self {
             Self::Push(segment, i) => match segment {
                 Segment::Const => format!(
                     "\
@@ -125,7 +125,7 @@ M=D"
                     "\
 @{i}
 D=A
-@StaticTest.{i}
+@{file_name}.{i}
 A=M+D
 D=M
 @SP
@@ -241,7 +241,7 @@ M=D"
                     "\
 @{i}
 D=A
-@StaticTest.{i}
+@{file_name}.{i}
 D=M+D
 @R13
 M=D
@@ -389,8 +389,6 @@ M=!M
 @SP
 M=M+1"
                 .into(),
-        };
-
-        write!(f, "{}", s)
+        }
     }
 }
