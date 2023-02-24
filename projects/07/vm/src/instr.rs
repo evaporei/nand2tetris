@@ -14,6 +14,7 @@ pub enum Instr {
     Not,
 }
 
+#[derive(PartialEq)]
 pub enum Segment {
     Const,
     Local,
@@ -21,6 +22,7 @@ pub enum Segment {
     This,
     That,
     Temp,
+    Pointer,
 }
 
 impl fmt::Display for Instr {
@@ -97,6 +99,27 @@ M=M+1
 A=M-1
 M=D"
                 ),
+                Segment::Pointer => match i {
+                    0 => format!(
+                        "\
+@THIS
+D=M
+@SP
+M=M+1
+A=M-1
+M=D"
+                    ),
+                    1 => format!(
+                        "\
+@THAT
+D=M
+@SP
+M=M+1
+A=M-1
+M=D"
+                    ),
+                    _ => unreachable!("push pointer only accepts 0 or 1 as argument")
+                },
             },
             Self::Pop(segment, i) => match segment {
                 Segment::Const => unreachable!("there is no constant segment to pop"),
@@ -180,6 +203,27 @@ D=M
 A=M
 M=D"
                 ),
+                Segment::Pointer => match i {
+                    0 => format!(
+                        "\
+@SP
+M=M-1
+A=M
+D=M
+@THIS
+M=D"
+                    ),
+                    1 => format!(
+                        "\
+@SP
+M=M-1
+A=M
+D=M
+@THAT
+M=D"
+                    ),
+                    _ => unreachable!("pop pointer only accepts 0 or 1 as argument")
+                },
             },
             // arithmetic
             Self::Add => "\

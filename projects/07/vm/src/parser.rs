@@ -26,12 +26,21 @@ impl Parser {
                     Some("this") => Segment::This,
                     Some("that") => Segment::That,
                     Some("temp") => Segment::Temp,
+                    Some("pointer") => Segment::Pointer,
                     Some(unknown) => panic!("unknown segment for push {unknown}"),
                     None => panic!("missing push first argument"),
                 };
 
                 let i = match splitted.next() {
-                    Some(i) => i.parse::<u16>().expect("second push arg should be u16"),
+                    Some(i) => {
+                        let i = i.parse::<u16>().expect("second pop arg should be u16");
+
+                        if segment == Segment::Pointer && i != 0 && i != 1 {
+                            panic!("push pointer second argument must be 0 or 1")
+                        }
+
+                        i
+                    },
                     None => panic!("missing push second argument"),
                 };
 
@@ -45,12 +54,21 @@ impl Parser {
                     Some("this") => Segment::This,
                     Some("that") => Segment::That,
                     Some("temp") => Segment::Temp,
+                    Some("pointer") => Segment::Pointer,
                     Some(unknown) => panic!("unknown segmentfor pop: {unknown}"),
                     None => panic!("missing pop first argument"),
                 };
 
                 let i = match splitted.next() {
-                    Some(i) => i.parse::<u16>().expect("second pop arg should be u16"),
+                    Some(i) => {
+                        let i = i.parse::<u16>().expect("second pop arg should be u16");
+
+                        if segment == Segment::Pointer && i != 0 && i != 1 {
+                            panic!("pop pointer second argument must be 0 or 1")
+                        }
+
+                        i
+                    },
                     None => panic!("missing pop second argument"),
                 };
 
