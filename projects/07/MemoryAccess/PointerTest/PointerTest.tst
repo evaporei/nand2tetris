@@ -11,7 +11,7 @@ output-list RAM[256]%D1.6.1 RAM[3]%D1.6.1
 
 set RAM[0] 256,   // initializes the stack pointer
 
-repeat 450 {      // enough cycles to complete the execution
+repeat 120 {      // enough cycles to complete the execution
   ticktock;
 }
 
