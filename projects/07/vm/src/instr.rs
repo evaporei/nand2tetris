@@ -53,11 +53,8 @@ M=M-D"
                 .into(),
             Self::Neg => "\
 @SP
-M=M-1
 A=M
-M=-M
-@SP
-M=M+1"
+M=-M"
                 .into(),
             // logical
             Self::Eq(i) => format!(
@@ -170,11 +167,8 @@ M=D|M"
                 .into(),
             Self::Not => "\
 @SP
-M=M-1
 A=M
-M=!M
-@SP
-M=M+1"
+M=!M"
                 .into(),
         };
 
