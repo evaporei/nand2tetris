@@ -90,7 +90,7 @@ M=D"
 @{i}
 D=A
 @5
-A=M+D
+A=D+A
 D=M
 @SP
 M=M+1
@@ -169,7 +169,7 @@ M=D"
 @{i}
 D=A
 @5
-D=M+D
+D=D+A
 @R13
 M=D
 @SP
