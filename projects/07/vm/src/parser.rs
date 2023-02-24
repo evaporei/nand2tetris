@@ -22,6 +22,7 @@ impl Parser {
                 let segment = match splitted.next() {
                     Some("constant") => Segment::Const,
                     Some("local") => Segment::Local,
+                    Some("argument") => Segment::Argument,
                     Some(unknown) => panic!("unknow segment {unknown}"),
                     None => panic!("missing push first argument"),
                 };
