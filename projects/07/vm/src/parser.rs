@@ -25,6 +25,7 @@ impl Parser {
                     Some("argument") => Segment::Argument,
                     Some("this") => Segment::This,
                     Some("that") => Segment::That,
+                    Some("temp") => Segment::Temp,
                     Some(unknown) => panic!("unknow segment {unknown}"),
                     None => panic!("missing push first argument"),
                 };
