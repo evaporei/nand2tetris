@@ -27,6 +27,7 @@ impl Parser {
                     Some("that") => Segment::That,
                     Some("temp") => Segment::Temp,
                     Some("pointer") => Segment::Pointer,
+                    Some("static") => Segment::Static,
                     Some(unknown) => panic!("unknown segment for push {unknown}"),
                     None => panic!("missing push first argument"),
                 };
@@ -55,6 +56,7 @@ impl Parser {
                     Some("that") => Segment::That,
                     Some("temp") => Segment::Temp,
                     Some("pointer") => Segment::Pointer,
+                    Some("static") => Segment::Static,
                     Some(unknown) => panic!("unknown segmentfor pop: {unknown}"),
                     None => panic!("missing pop first argument"),
                 };

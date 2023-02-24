@@ -23,6 +23,7 @@ pub enum Segment {
     That,
     Temp,
     Pointer,
+    Static,
 }
 
 impl fmt::Display for Instr {
@@ -120,6 +121,18 @@ M=D"
                     ),
                     _ => unreachable!("push pointer only accepts 0 or 1 as argument")
                 },
+                Segment::Static => format!(
+                    "\
+@{i}
+D=A
+@StaticTest.{i}
+A=M+D
+D=M
+@SP
+M=M+1
+A=M-1
+M=D"
+                ),
             },
             Self::Pop(segment, i) => match segment {
                 Segment::Const => unreachable!("there is no constant segment to pop"),
@@ -224,6 +237,22 @@ M=D"
                     ),
                     _ => unreachable!("pop pointer only accepts 0 or 1 as argument")
                 },
+                Segment::Static => format!(
+                    "\
+@{i}
+D=A
+@StaticTest.{i}
+D=M+D
+@R13
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@R13
+A=M
+M=D"
+                ),
             },
             // arithmetic
             Self::Add => "\
