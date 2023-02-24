@@ -26,7 +26,7 @@ impl Parser {
                     Some("this") => Segment::This,
                     Some("that") => Segment::That,
                     Some("temp") => Segment::Temp,
-                    Some(unknown) => panic!("unknow segment {unknown}"),
+                    Some(unknown) => panic!("unknown segment for push {unknown}"),
                     None => panic!("missing push first argument"),
                 };
 
@@ -36,6 +36,25 @@ impl Parser {
                 };
 
                 Some(Instr::Push(segment, i))
+            }
+            Some("pop") => {
+                let segment = match splitted.next() {
+                    Some("constant") => panic!("constant segment doesn't exist for pop"),
+                    Some("local") => Segment::Local,
+                    Some("argument") => Segment::Argument,
+                    Some("this") => Segment::This,
+                    Some("that") => Segment::That,
+                    Some("temp") => Segment::Temp,
+                    Some(unknown) => panic!("unknown segmentfor pop: {unknown}"),
+                    None => panic!("missing pop first argument"),
+                };
+
+                let i = match splitted.next() {
+                    Some(i) => i.parse::<u16>().expect("second pop arg should be u16"),
+                    None => panic!("missing pop second argument"),
+                };
+
+                Some(Instr::Pop(segment, i))
             }
             Some("add") => Some(Instr::Add),
             Some("sub") => Some(Instr::Sub),

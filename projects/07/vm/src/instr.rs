@@ -2,6 +2,7 @@ use std::fmt;
 
 pub enum Instr {
     Push(Segment, u16),
+    Pop(Segment, u16),
     Add,
     Sub,
     Neg,
@@ -38,7 +39,8 @@ M=M+1"
                 ),
                 Segment::Local => format!(
                     "\
-D={i}
+@{i}
+D=A
 @LCL
 A=M+D
 D=M
@@ -49,7 +51,8 @@ M=D"
                 ),
                 Segment::Argument => format!(
                     "\
-D={i}
+@{i}
+D=A
 @ARG
 A=M+D
 D=M
@@ -60,7 +63,8 @@ M=D"
                 ),
                 Segment::This => format!(
                     "\
-D={i}
+@{i}
+D=A
 @THIS
 A=M+D
 D=M
@@ -71,7 +75,8 @@ M=D"
                 ),
                 Segment::That => format!(
                     "\
-D={i}
+@{i}
+D=A
 @THAT
 A=M+D
 D=M
@@ -82,13 +87,97 @@ M=D"
                 ),
                 Segment::Temp => format!(
                     "\
-D={i}
+@{i}
+D=A
 @5
 A=M+D
 D=M
 @SP
 M=M+1
 A=M-1
+M=D"
+                ),
+            },
+            Self::Pop(segment, i) => match segment {
+                Segment::Const => unreachable!("there is no constant segment to pop"),
+                Segment::Local => format!(
+                    "\
+@{i}
+D=A
+@LCL
+D=M+D
+@R13
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@R13
+A=M
+M=D"
+                ),
+                Segment::Argument => format!(
+                    "\
+@{i}
+D=A
+@ARG
+D=M+D
+@R13
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@R13
+A=M
+M=D"
+                ),
+                Segment::This => format!(
+                    "\
+@{i}
+D=A
+@THIS
+D=M+D
+@R13
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@R13
+A=M
+M=D"
+                ),
+                Segment::That => format!(
+                    "\
+@{i}
+D=A
+@THAT
+D=M+D
+@R13
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@R13
+A=M
+M=D"
+                ),
+                Segment::Temp => format!(
+                    "\
+@{i}
+D=A
+@5
+D=M+D
+@R13
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@R13
+A=M
 M=D"
                 ),
             },
