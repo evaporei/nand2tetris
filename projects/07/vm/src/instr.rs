@@ -15,6 +15,7 @@ pub enum Instr {
 
 pub enum Segment {
     Const,
+    Local,
 }
 
 impl fmt::Display for Instr {
@@ -30,6 +31,17 @@ A=M
 M=D
 @SP
 M=M+1"
+                ),
+                Segment::Local => format!(
+                    "\
+D={i}
+@LCL
+A=M+D
+D=M
+@SP
+M=M+1
+A=M-1
+M=D"
                 ),
             },
             // arithmetic
