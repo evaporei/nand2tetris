@@ -118,15 +118,14 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
+A=M-1
 D=D-M
 @LT_ELSE_{i}
-D;JLE
+D;JGT
 
 // (IF-then) it's less than or equal to zero
 @SP
-A=M
+A=M-1
 M=0
 @LT_END_{i}
 0;JMP
@@ -134,12 +133,10 @@ M=0
 // (IF-else) -> no less than found
 (LT_ELSE_{i})
 @SP
-A=M
+A=M-1
 M=-1
 
-(LT_END_{i})
-@SP
-M=M+1"
+(LT_END_{i})"
             ),
             Self::And => "\
 @SP
