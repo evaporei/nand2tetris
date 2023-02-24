@@ -23,6 +23,8 @@ impl Parser {
                     Some("constant") => Segment::Const,
                     Some("local") => Segment::Local,
                     Some("argument") => Segment::Argument,
+                    Some("this") => Segment::This,
+                    Some("that") => Segment::That,
                     Some(unknown) => panic!("unknow segment {unknown}"),
                     None => panic!("missing push first argument"),
                 };

@@ -17,6 +17,8 @@ pub enum Segment {
     Const,
     Local,
     Argument,
+    This,
+    That,
 }
 
 impl fmt::Display for Instr {
@@ -48,6 +50,28 @@ M=D"
                     "\
 D={i}
 @ARG
+A=M+D
+D=M
+@SP
+M=M+1
+A=M-1
+M=D"
+                ),
+                Segment::This => format!(
+                    "\
+D={i}
+@THIS
+A=M+D
+D=M
+@SP
+M=M+1
+A=M-1
+M=D"
+                ),
+                Segment::That => format!(
+                    "\
+D={i}
+@THAT
 A=M+D
 D=M
 @SP
