@@ -64,28 +64,25 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
+A=M-1
 D=D-M
-@LOGICAL_EQ_BODY_{i}
+@EQ_BODY_{i}
 D;JEQ
 
 // (IF-else) -> no equality found
 @SP
-A=M
-M=-1
-@LOGICAL_EQ_END_{i}
+A=M-1
+M=0
+@EQ_END_{i}
 0;JMP
 
 // (IF-then) it's equal to zero, which means equality
-(LOGICAL_EQ_BODY_{i})
+(EQ_BODY_{i})
 @SP
-A=M
-M=0
+A=M-1
+M=-1
 
-(LOGICAL_EQ_END_{i})
-@SP
-M=M+1"
+(EQ_END_{i})"
             ),
             Self::Gt(i) => format!(
                 "\
