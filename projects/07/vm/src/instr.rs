@@ -91,15 +91,14 @@ M=M-1
 A=M
 D=M
 @SP
-M=M-1
-A=M
+A=M-1
 D=D-M
 @GT_ELSE_{i}
-D;JGE
+D;JLT
 
 // (IF-then) it's greater than or equal to zero
 @SP
-A=M
+A=M-1
 M=0
 @GT_END_{i}
 0;JMP
@@ -107,12 +106,10 @@ M=0
 // (IF-else) -> no greater than found
 (GT_ELSE_{i})
 @SP
-A=M
+A=M-1
 M=-1
 
-(GT_END_{i})
-@SP
-M=M+1"
+(GT_END_{i})"
             ),
             Self::Lt(i) => format!(
                 "\
