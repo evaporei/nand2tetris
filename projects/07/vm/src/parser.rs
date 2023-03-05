@@ -86,9 +86,14 @@ impl Parser {
             Some("or") => Some(Instr::Or),
             Some("not") => Some(Instr::Not),
             Some("label") => {
-                let label = splitted.next().expect("missing label name argument");
+                let label = splitted.next().expect("missing label name argument in label command");
 
                 Some(Instr::Label(label.to_string()))
+            }
+            Some("goto") => {
+                let label = splitted.next().expect("missing label name argument in goto command");
+
+                Some(Instr::Goto(label.to_string()))
             }
             Some(s) => {
                 if s.starts_with("/") {

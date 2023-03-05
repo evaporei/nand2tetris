@@ -11,6 +11,7 @@ pub enum Instr {
     Or,
     Not,
     Label(String),
+    Goto(String),
 }
 
 #[derive(PartialEq)]
@@ -393,6 +394,11 @@ M=M+1"
             Self::Label(label) => format!(
                 "\
 ({label})"
+            ),
+            Self::Goto(label) => format!(
+                "\
+@{label}
+0;JMP"
             ),
         }
     }
