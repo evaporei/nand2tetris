@@ -120,7 +120,7 @@ M=M+1
 A=M-1
 M=D"
                     ),
-                    _ => unreachable!("push pointer only accepts 0 or 1 as argument")
+                    _ => unreachable!("push pointer only accepts 0 or 1 as argument"),
                 },
                 Segment::Static => format!(
                     "\
@@ -236,7 +236,7 @@ D=M
 @THAT
 M=D"
                     ),
-                    _ => unreachable!("pop pointer only accepts 0 or 1 as argument")
+                    _ => unreachable!("pop pointer only accepts 0 or 1 as argument"),
                 },
                 Segment::Static => format!(
                     "\

@@ -41,7 +41,7 @@ impl Parser {
                         }
 
                         i
-                    },
+                    }
                     None => panic!("missing push second argument"),
                 };
 
@@ -70,7 +70,7 @@ impl Parser {
                         }
 
                         i
-                    },
+                    }
                     None => panic!("missing pop second argument"),
                 };
 
