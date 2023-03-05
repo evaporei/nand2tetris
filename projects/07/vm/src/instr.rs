@@ -10,6 +10,7 @@ pub enum Instr {
     And,
     Or,
     Not,
+    Label(String),
 }
 
 #[derive(PartialEq)]
@@ -389,6 +390,10 @@ M=!M
 @SP
 M=M+1"
                 .into(),
+            Self::Label(label) => format!(
+                "\
+({label})"
+            ),
         }
     }
 }

@@ -85,6 +85,11 @@ impl Parser {
             Some("and") => Some(Instr::And),
             Some("or") => Some(Instr::Or),
             Some("not") => Some(Instr::Not),
+            Some("label") => {
+                let label = splitted.next().expect("missing label name argument");
+
+                Some(Instr::Label(label.to_string()))
+            }
             Some(s) => {
                 if s.starts_with("/") {
                     None
