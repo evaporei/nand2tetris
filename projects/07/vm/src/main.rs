@@ -2,7 +2,7 @@ use std::env;
 use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use vm::parser::Parser;
 
 /// Removes extension from file name.
@@ -21,8 +21,11 @@ fn main() {
 
     let instructions = Parser::parse(program.lines());
 
-    let mut translated_file = File::create(format!("{}.asm", file_name(&file).unwrap()))
-        .expect("failed to create assembly file");
+    let mut new_file = PathBuf::from(file);
+
+    new_file.set_extension("asm");
+
+    let mut translated_file = File::create(new_file).expect("failed to create assembly file");
 
     for instruction in instructions {
         translated_file
