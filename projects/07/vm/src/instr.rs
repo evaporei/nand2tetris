@@ -12,6 +12,7 @@ pub enum Instr {
     Not,
     Label(String),
     Goto(String),
+    IfGoto(String),
 }
 
 #[derive(PartialEq)]
@@ -393,12 +394,21 @@ M=M+1"
                 .into(),
             Self::Label(label) => format!(
                 "\
-({label})"
+({file_name}.{label})"
             ),
             Self::Goto(label) => format!(
                 "\
-@{label}
+@{file_name}.{label}
 0;JMP"
+            ),
+            Self::IfGoto(label) => format!(
+                "\
+@SP
+M=M-1
+A=M
+D=M
+@{file_name}.{label}
+D;JNE"
             ),
         }
     }

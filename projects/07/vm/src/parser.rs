@@ -99,6 +99,13 @@ impl Parser {
 
                 Some(Instr::Goto(label.to_string()))
             }
+            Some("if-goto") => {
+                let label = splitted
+                    .next()
+                    .expect("missing label name argument in if-goto command");
+
+                Some(Instr::IfGoto(label.to_string()))
+            }
             Some(s) => {
                 if s.starts_with("/") {
                     None
