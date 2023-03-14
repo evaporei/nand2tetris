@@ -21,7 +21,7 @@ impl Symbol {
 
         if s.parse::<u16>().is_err() {
             Some(Symbol {
-                idx,// TODO: this idx isn't used for variables, only for labels
+                idx, // TODO: this idx isn't used for variables, only for labels
                 s,
                 k: SymbolKind::Variable,
             })
