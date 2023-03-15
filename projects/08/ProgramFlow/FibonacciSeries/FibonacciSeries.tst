@@ -15,7 +15,7 @@ set RAM[2] 400,
 set RAM[400] 6,
 set RAM[401] 3000,
 
-repeat 1100 {
+repeat 700 {
   ticktock;
 }
 
