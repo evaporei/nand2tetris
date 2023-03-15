@@ -13,6 +13,7 @@ pub enum Instr {
     Label(String),
     Goto(String),
     IfGoto(String),
+    Function(String, usize),
 }
 
 #[derive(PartialEq)]
@@ -409,6 +410,10 @@ A=M
 D=M
 @{file_name}.{label}
 D;JNE"
+            ),
+            Self::Function(name, args) => format!(
+                "\
+"
             ),
         }
     }

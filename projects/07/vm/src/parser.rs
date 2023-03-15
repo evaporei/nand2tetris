@@ -106,6 +106,20 @@ impl Parser {
 
                 Some(Instr::IfGoto(label.to_string()))
             }
+            Some("function") => {
+                let name = splitted
+                    .next()
+                    .expect("missing name argument in function command")
+                    .to_string();
+
+                let args = splitted
+                    .next()
+                    .expect("missing args argument in function command")
+                    .parse()
+                    .expect("args argument in function should be a positive integer");
+
+                Some(Instr::Function(name, args))
+            }
             Some(s) => {
                 if s.starts_with("/") {
                     None
