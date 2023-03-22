@@ -529,7 +529,7 @@ M=D";
 0;JMP"
                 );
 
-                let label = "(CALL_{name})";
+                let label = format!("(CALL_{name})");
 
                 format!("{push_label_addr}\n{push_lcl}\n{push_arg}\n{push_this}\n{push_that}\n{reposition_arg}\n{reposition_lcl}\n{jmp_to_fn}\n{label}")
             }
