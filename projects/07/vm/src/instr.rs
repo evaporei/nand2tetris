@@ -31,7 +31,7 @@ pub enum Segment {
 pub type ASMCode = String;
 
 impl Instr {
-    pub fn to_assembly(self, file_name: String) -> ASMCode {
+    pub fn to_assembly(self, file_name: &str) -> ASMCode {
         match self {
             Self::Push(segment, i) => match segment {
                 Segment::Const => format!(

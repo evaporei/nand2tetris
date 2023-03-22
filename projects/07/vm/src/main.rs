@@ -27,9 +27,11 @@ fn main() {
 
     let mut translated_file = File::create(new_file).expect("failed to create assembly file");
 
+    let file_name = file_name(file).unwrap();
+
     for instruction in instructions {
         translated_file
-            .write_all(instruction.to_assembly(file_name(file).unwrap()).as_bytes())
+            .write_all(instruction.to_assembly(&file_name).as_bytes())
             .expect("failed to write instruction to translated file");
 
         translated_file
