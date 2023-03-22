@@ -14,6 +14,7 @@ pub enum Instr {
     Goto(String),
     IfGoto(String),
     Function(String, usize),
+    Return,
 }
 
 #[derive(PartialEq)]
@@ -421,6 +422,66 @@ D;JNE"
                 }
 
                 format!("{label}\n{pushes}")
+            }
+            Self::Return => {
+                // R14=FRAME
+                let save_frame = "\
+@LCL
+D=M
+@R14
+M=D";
+
+                // R15=RET_ADDR
+                let save_return_addr = "\
+@5
+A=D-A
+D=M
+@R15
+M=D";
+
+                let return_val = Self::Pop(Segment::Argument, 0).to_assembly(&file_name);
+
+                let adjust_sp = "\
+@ARG
+D=M
+@SP
+M=D+1";
+
+                // AMD=M-1 is equivalent to D=M-1 and AM=D
+                let restore_that = "\
+@R14
+AMD=M-1
+D=M
+@THAT
+M=D";
+
+                let restore_this = "\
+@R14
+AMD=M-1
+D=M
+@THIS
+M=D";
+
+                let restore_arg = "\
+@R14
+AMD=M-1
+D=M
+@ARG
+M=D";
+
+                let restore_lcl = "\
+@R14
+AMD=M-1
+D=M
+@LCL
+M=D";
+
+                let goto_ret_addr = "\
+@R15
+A=M
+0;JMP";
+
+                format!("{save_frame}\n{save_return_addr}\n{return_val}\n{adjust_sp}\n{restore_that}\n{restore_this}\n{restore_arg}\n{restore_lcl}\n{goto_ret_addr}")
             }
         }
     }

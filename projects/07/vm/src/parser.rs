@@ -120,6 +120,7 @@ impl Parser {
 
                 Some(Instr::Function(name, n_vars))
             }
+            Some("return") => Some(Instr::Return),
             Some(s) => {
                 if s.starts_with("/") {
                     None
