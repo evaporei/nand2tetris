@@ -411,10 +411,17 @@ D=M
 @{file_name}.{label}
 D;JNE"
             ),
-            Self::Function(name, args) => format!(
-                "\
-"
-            ),
+            Self::Function(name, n_vars) => {
+                let label = format!("({name})");
+
+                let mut pushes = String::new();
+                for _ in 0..n_vars {
+                    pushes.push_str(&Self::Push(Segment::Const, 0).to_assembly(file_name));
+                    pushes.push('\n');
+                }
+
+                format!("{label}\n{pushes}")
+            }
         }
     }
 }

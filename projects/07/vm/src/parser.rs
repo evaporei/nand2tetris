@@ -112,13 +112,13 @@ impl Parser {
                     .expect("missing name argument in function command")
                     .to_string();
 
-                let args = splitted
+                let n_vars = splitted
                     .next()
-                    .expect("missing args argument in function command")
+                    .expect("missing nVars argument in function command")
                     .parse()
-                    .expect("args argument in function should be a positive integer");
+                    .expect("nVars argument in function should be a positive integer");
 
-                Some(Instr::Function(name, args))
+                Some(Instr::Function(name, n_vars))
             }
             Some(s) => {
                 if s.starts_with("/") {
