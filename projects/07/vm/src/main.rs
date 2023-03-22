@@ -16,26 +16,36 @@ fn file_name(file: &str) -> Option<String> {
 /// The vm converts the vm byte code into Hack Assembly
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
-    let file = &args[0];
-    let program = fs::read_to_string(file.clone()).expect("vm program doesn't exist");
+    let file_or_dir = &args[0];
+    let metadata = fs::metadata(file_or_dir).unwrap();
 
-    let instructions = Parser::parse(program.lines());
+    if metadata.is_file() {
+        let file = file_or_dir;
 
-    let mut new_file = PathBuf::from(file);
+        let program = fs::read_to_string(file.clone()).expect("vm program doesn't exist");
 
-    new_file.set_extension("asm");
+        let instructions = Parser::parse(program.lines());
 
-    let mut translated_file = File::create(new_file).expect("failed to create assembly file");
+        let mut new_file = PathBuf::from(file);
 
-    let file_name = file_name(file).unwrap();
+        new_file.set_extension("asm");
 
-    for instruction in instructions {
-        translated_file
-            .write_all(instruction.to_assembly(&file_name).as_bytes())
-            .expect("failed to write instruction to translated file");
+        let mut translated_file = File::create(new_file).expect("failed to create assembly file");
 
-        translated_file
-            .write_all(b"\n")
-            .expect("failed to write new line to translated file");
+        let file_name = file_name(file).unwrap();
+
+        for instruction in instructions {
+            translated_file
+                .write_all(instruction.to_assembly(&file_name).as_bytes())
+                .expect("failed to write instruction to translated file");
+
+            translated_file
+                .write_all(b"\n")
+                .expect("failed to write new line to translated file");
+        }
+    } else if metadata.is_dir() {
+        // TODO: handle dir of vm files
+    } else {
+        panic!("unsupported parameter, passing symlink maybe?");
     }
 }
