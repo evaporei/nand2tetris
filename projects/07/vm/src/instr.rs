@@ -15,6 +15,7 @@ pub enum Instr {
     IfGoto(String),
     Function(String, usize),
     Return,
+    Call(String, usize),
 }
 
 #[derive(PartialEq)]
@@ -482,6 +483,55 @@ A=M
 0;JMP";
 
                 format!("{save_frame}\n{save_return_addr}\n{return_val}\n{adjust_sp}\n{restore_that}\n{restore_this}\n{restore_arg}\n{restore_lcl}\n{goto_ret_addr}")
+            }
+            Self::Call(name, n_args) => {
+                let push_const = |addr: &str, where_: &str| {
+                    format!(
+                        "\
+@{addr}
+D={where_}
+@SP
+A=M
+M=D
+@SP
+M=M+1"
+                    )
+                };
+
+                let push_label_addr = push_const(&format!("CALL_{name}"), "A");
+
+                let push_lcl = push_const("LCL", "M");
+                let push_arg = push_const("ARG", "M");
+                let push_this = push_const("THIS", "M");
+                let push_that = push_const("THAT", "M");
+
+                // ARG = SP - 5 - nArgs
+                let reposition_arg = format!(
+                    "\
+@SP
+D=M
+@5
+D=D-A
+@{n_args}
+D=D-A"
+                );
+
+                // LCL = SP
+                let reposition_lcl = "\
+@SP
+D=M
+@LCL
+M=D";
+
+                let jmp_to_fn = format!(
+                    "\
+@{name}
+0;JMP"
+                );
+
+                let label = "(CALL_{name})";
+
+                format!("{push_label_addr}\n{push_lcl}\n{push_arg}\n{push_this}\n{push_that}\n{reposition_arg}\n{reposition_lcl}\n{jmp_to_fn}\n{label}")
             }
         }
     }

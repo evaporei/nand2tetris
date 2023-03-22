@@ -121,6 +121,20 @@ impl Parser {
                 Some(Instr::Function(name, n_vars))
             }
             Some("return") => Some(Instr::Return),
+            Some("call") => {
+                let name = splitted
+                    .next()
+                    .expect("missing name argument in call command")
+                    .to_string();
+
+                let n_args = splitted
+                    .next()
+                    .expect("missing nArgs argument in call command")
+                    .parse()
+                    .expect("nArgs argument in call should be a positive integer");
+
+                Some(Instr::Call(name, n_args))
+            }
             Some(s) => {
                 if s.starts_with("/") {
                     None
