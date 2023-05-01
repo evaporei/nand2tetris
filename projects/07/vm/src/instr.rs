@@ -288,7 +288,7 @@ M=-M
 M=M+1"
                 .into(),
             // logical
-            Self::Eq(i) => format!(
+            Self::Eq(bool_count) => format!(
                 "\
 @SP
 M=M-1
@@ -297,25 +297,25 @@ D=M
 @SP
 A=M-1
 D=D-M
-@EQ_BODY_{i}
+@EQ_BODY_{bool_count}
 D;JEQ
 
 // (IF-else) -> no equality found
 @SP
 A=M-1
 M=0
-@EQ_END_{i}
+@EQ_END_{bool_count}
 0;JMP
 
 // (IF-then) it's equal to zero, which means equality
-(EQ_BODY_{i})
+(EQ_BODY_{bool_count})
 @SP
 A=M-1
 M=-1
 
-(EQ_END_{i})"
+(EQ_END_{bool_count})"
             ),
-            Self::Gt(i) => format!(
+            Self::Gt(bool_count) => format!(
                 "\
 @SP
 M=M-1
@@ -324,25 +324,25 @@ D=M
 @SP
 A=M-1
 D=D-M
-@GT_ELSE_{i}
+@GT_ELSE_{bool_count}
 D;JLT
 
 // (IF-then) it's greater than or equal to zero
 @SP
 A=M-1
 M=0
-@GT_END_{i}
+@GT_END_{bool_count}
 0;JMP
 
 // (IF-else) -> no greater than found
-(GT_ELSE_{i})
+(GT_ELSE_{bool_count})
 @SP
 A=M-1
 M=-1
 
-(GT_END_{i})"
+(GT_END_{bool_count})"
             ),
-            Self::Lt(i) => format!(
+            Self::Lt(bool_count) => format!(
                 "\
 @SP
 M=M-1
@@ -351,23 +351,23 @@ D=M
 @SP
 A=M-1
 D=D-M
-@LT_ELSE_{i}
+@LT_ELSE_{bool_count}
 D;JGT
 
 // (IF-then) it's less than or equal to zero
 @SP
 A=M-1
 M=0
-@LT_END_{i}
+@LT_END_{bool_count}
 0;JMP
 
 // (IF-else) -> no less than found
-(LT_ELSE_{i})
+(LT_ELSE_{bool_count})
 @SP
 A=M-1
 M=-1
 
-(LT_END_{i})"
+(LT_END_{bool_count})"
             ),
             Self::And => "\
 @SP

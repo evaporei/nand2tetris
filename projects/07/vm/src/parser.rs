@@ -1,23 +1,35 @@
 use crate::instr::{Instr, Segment};
 use std::str::Lines;
 
+#[derive(Default)]
+struct State {
+    bool_count: usize,
+    call_count: usize,
+    // func: String,
+}
+
 pub struct Parser;
 
 impl Parser {
     pub fn parse(lines: Lines) -> Vec<Instr> {
         lines
-            .enumerate()
-            .map(|(i, line)| Self::parse_line(i, line))
-            .filter_map(|x| x)
-            .collect()
+            .fold((State::default(), vec![]), |(state, mut instrs), line| {
+                let (new_state, instr) = Self::parse_line(state, line);
+
+                if let Some(instr) = instr {
+                    instrs.push(instr);
+                }
+
+                (new_state, instrs)
+            }).1
     }
 
-    fn parse_line(i: usize, line: &str) -> Option<Instr> {
+    fn parse_line(mut state: State, line: &str) -> (State, Option<Instr>) {
         let trimmed = line.trim().chars();
         let chars: String = trimmed.take_while(|&ch| ch != '/').collect();
         let mut splitted = chars.split_whitespace();
 
-        match splitted.next() {
+        let instr = match splitted.next() {
             Some("push") => {
                 let segment = match splitted.next() {
                     Some("constant") => Segment::Const,
@@ -79,9 +91,21 @@ impl Parser {
             Some("add") => Some(Instr::Add),
             Some("sub") => Some(Instr::Sub),
             Some("neg") => Some(Instr::Neg),
-            Some("eq") => Some(Instr::Eq(i)),
-            Some("gt") => Some(Instr::Gt(i)),
-            Some("lt") => Some(Instr::Lt(i)),
+            Some("eq") => {
+                let eq = Some(Instr::Eq(state.bool_count));
+                state.bool_count += 1;
+                eq
+            },
+            Some("gt") => {
+                let gt = Some(Instr::Gt(state.bool_count));
+                state.bool_count += 1;
+                gt
+            },
+            Some("lt") => {
+                let lt = Some(Instr::Lt(state.bool_count));
+                state.bool_count += 1;
+                lt
+            },
             Some("and") => Some(Instr::And),
             Some("or") => Some(Instr::Or),
             Some("not") => Some(Instr::Not),
@@ -133,7 +157,7 @@ impl Parser {
                     .parse()
                     .expect("nArgs argument in call should be a positive integer");
 
-                Some(Instr::Call(name, n_args, i))
+                Some(Instr::Call(name, n_args, state.call_count))
             }
             Some(s) => {
                 if s.starts_with("/") {
@@ -143,6 +167,8 @@ impl Parser {
                 }
             }
             None => None,
-        }
+        };
+
+        (state, instr)
     }
 }
