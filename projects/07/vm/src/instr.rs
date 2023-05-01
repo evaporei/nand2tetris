@@ -15,7 +15,7 @@ pub enum Instr {
     IfGoto(String),
     Function(String, usize),
     Return,
-    Call(String, usize),
+    Call(String, usize, usize),
 }
 
 #[derive(PartialEq)]
@@ -422,7 +422,7 @@ D;JNE"
                     pushes.push('\n');
                 }
 
-                format!("{label}\n{pushes}")
+                format!("{label}{pushes}")
             }
             Self::Return => {
                 // R14=FRAME
@@ -449,42 +449,41 @@ D=M
 M=D+1";
 
                 // AMD=M-1 is equivalent to D=M-1 and AM=D
-                let restore_that = "\
+                let restore = |var: &str| {
+                    format!(
+                        "\
 @R14
 AMD=M-1
 D=M
-@THAT
-M=D";
+@{var}
+M=D"
+                    )
+                };
 
-                let restore_this = "\
-@R14
-AMD=M-1
-D=M
-@THIS
-M=D";
-
-                let restore_arg = "\
-@R14
-AMD=M-1
-D=M
-@ARG
-M=D";
-
-                let restore_lcl = "\
-@R14
-AMD=M-1
-D=M
-@LCL
-M=D";
+                let restore_that = restore("THAT");
+                let restore_this = restore("THIS");
+                let restore_arg = restore("ARG");
+                let restore_lcl = restore("LCL");
 
                 let goto_ret_addr = "\
 @R15
 A=M
 0;JMP";
 
-                format!("{save_frame}\n{save_return_addr}\n{return_val}\n{adjust_sp}\n{restore_that}\n{restore_this}\n{restore_arg}\n{restore_lcl}\n{goto_ret_addr}")
+                format!(
+                    "\
+{save_frame}
+{save_return_addr}
+{return_val}
+{adjust_sp}
+{restore_that}
+{restore_this}
+{restore_arg}
+{restore_lcl}
+{goto_ret_addr}"
+                )
             }
-            Self::Call(name, n_args) => {
+            Self::Call(name, n_args, call_count) => {
                 let push_const = |addr: &str, where_: &str| {
                     format!(
                         "\
@@ -498,23 +497,12 @@ M=M+1"
                     )
                 };
 
-                let push_label_addr = push_const(&format!("CALL_{name}"), "A");
+                let push_label_addr = push_const(&format!("{file_name}.RET_{call_count}"), "A");
 
                 let push_lcl = push_const("LCL", "M");
                 let push_arg = push_const("ARG", "M");
                 let push_this = push_const("THIS", "M");
                 let push_that = push_const("THAT", "M");
-
-                // ARG = SP - 5 - nArgs
-                let reposition_arg = format!(
-                    "\
-@SP
-D=M
-@5
-D=D-A
-@{n_args}
-D=D-A"
-                );
 
                 // LCL = SP
                 let reposition_lcl = "\
@@ -523,15 +511,38 @@ D=M
 @LCL
 M=D";
 
+                let sum = n_args + 5;
+
+                // ARG = SP - 5 - nArgs
+                // (D already holds SP)
+                let reposition_arg = format!(
+                    "\
+@{sum}
+D=D-A
+@ARG
+M=D"
+                );
+
                 let jmp_to_fn = format!(
                     "\
 @{name}
 0;JMP"
                 );
 
-                let label = format!("(CALL_{name})");
+                let label = format!("({file_name}.RET_{call_count})");
 
-                format!("{push_label_addr}\n{push_lcl}\n{push_arg}\n{push_this}\n{push_that}\n{reposition_arg}\n{reposition_lcl}\n{jmp_to_fn}\n{label}")
+                format!(
+                    "\
+{push_label_addr}
+{push_lcl}
+{push_arg}
+{push_this}
+{push_that}
+{reposition_lcl}
+{reposition_arg}
+{jmp_to_fn}
+{label}"
+                )
             }
         }
     }

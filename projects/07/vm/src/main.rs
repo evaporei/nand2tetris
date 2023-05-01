@@ -26,7 +26,32 @@ fn create_asm_file(file: &str) -> File {
     File::create(new_file).expect("failed to create assembly file")
 }
 
+// bootstrap code
+fn initialization(file_name: &str) -> String {
+    let init_var = |var: &str, at: &str| {
+        format!(
+            "\
+@{at}
+D=A
+@{var}
+M=D"
+        )
+    };
+
+    let init_sp = init_var("SP", "256");
+    // let init_lcl = init_var("LCL", "300");
+    // let init_arg = init_var("ARG", "400");
+    // let init_this = init_var("THIS", "3000");
+    // let init_that = init_var("THAT", "3010");
+
+    let call_sys_init = Instr::Call("Sys.init".into(), 0, 0).to_assembly(file_name);
+
+    format!("{init_sp}\n{call_sys_init}\n")
+}
+
 fn write_asm(file: &mut File, file_name: &str, instructions: Vec<Instr>) {
+    file.write_all(initialization(file_name).as_bytes()).expect("failed to write initialization code to translated file");
+
     for instruction in instructions {
         file.write_all(instruction.to_assembly(&file_name).as_bytes())
             .expect("failed to write instruction to translated file");
@@ -55,6 +80,8 @@ fn main() {
     } else if metadata.is_dir() {
         let mut dirname = PathBuf::from(file_or_dir);
 
+        let module_name = PathBuf::from(file_or_dir);
+
         dirname.push(file_name(file_or_dir).unwrap());
 
         let paths = fs::read_dir(file_or_dir).unwrap();
@@ -71,7 +98,7 @@ fn main() {
 
                 write_asm(
                     &mut new_file,
-                    path.file_name().unwrap().to_str().unwrap(),
+                    module_name.file_name().unwrap().to_str().unwrap(),
                     instructions,
                 );
             }
