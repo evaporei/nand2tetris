@@ -157,7 +157,9 @@ impl Parser {
                     .parse()
                     .expect("nArgs argument in call should be a positive integer");
 
-                Some(Instr::Call(name, n_args, state.call_count))
+                let call = Some(Instr::Call(name, n_args, state.call_count));
+                state.call_count += 1;
+                call
             }
             Some(s) => {
                 if s.starts_with("/") {
