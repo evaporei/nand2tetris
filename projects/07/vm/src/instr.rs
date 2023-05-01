@@ -395,13 +395,10 @@ M=!M
 @SP
 M=M+1"
                 .into(),
-            Self::Label(label) => format!(
-                "\
-({file_name}.{label})"
-            ),
+            Self::Label(label) => label,
             Self::Goto(label) => format!(
                 "\
-@{file_name}.{label}
+@{label}
 0;JMP"
             ),
             Self::IfGoto(label) => format!(
@@ -410,7 +407,7 @@ M=M+1"
 M=M-1
 A=M
 D=M
-@{file_name}.{label}
+@{label}
 D;JNE"
             ),
             Self::Function(name, n_vars) => {

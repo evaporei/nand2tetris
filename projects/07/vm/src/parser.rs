@@ -5,7 +5,7 @@ use std::str::Lines;
 struct State {
     bool_count: usize,
     call_count: usize,
-    // func: String,
+    curr_func: String,
 }
 
 pub struct Parser;
@@ -21,7 +21,8 @@ impl Parser {
                 }
 
                 (new_state, instrs)
-            }).1
+            })
+            .1
     }
 
     fn parse_line(mut state: State, line: &str) -> (State, Option<Instr>) {
@@ -95,17 +96,17 @@ impl Parser {
                 let eq = Some(Instr::Eq(state.bool_count));
                 state.bool_count += 1;
                 eq
-            },
+            }
             Some("gt") => {
                 let gt = Some(Instr::Gt(state.bool_count));
                 state.bool_count += 1;
                 gt
-            },
+            }
             Some("lt") => {
                 let lt = Some(Instr::Lt(state.bool_count));
                 state.bool_count += 1;
                 lt
-            },
+            }
             Some("and") => Some(Instr::And),
             Some("or") => Some(Instr::Or),
             Some("not") => Some(Instr::Not),
@@ -114,21 +115,27 @@ impl Parser {
                     .next()
                     .expect("missing label name argument in label command");
 
-                Some(Instr::Label(label.to_string()))
+                let fmt_label = format!("({}{label})", state.curr_func);
+
+                Some(Instr::Label(fmt_label))
             }
             Some("goto") => {
                 let label = splitted
                     .next()
                     .expect("missing label name argument in goto command");
 
-                Some(Instr::Goto(label.to_string()))
+                let fmt_label = format!("{}{label}", state.curr_func);
+
+                Some(Instr::Goto(fmt_label))
             }
             Some("if-goto") => {
                 let label = splitted
                     .next()
                     .expect("missing label name argument in if-goto command");
 
-                Some(Instr::IfGoto(label.to_string()))
+                let fmt_label = format!("{}{label}", state.curr_func);
+
+                Some(Instr::IfGoto(fmt_label))
             }
             Some("function") => {
                 let name = splitted
@@ -141,6 +148,8 @@ impl Parser {
                     .expect("missing nVars argument in function command")
                     .parse()
                     .expect("nVars argument in function should be a positive integer");
+
+                state.curr_func = format!("{name}$");
 
                 Some(Instr::Function(name, n_vars))
             }
