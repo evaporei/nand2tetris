@@ -50,7 +50,8 @@ M=D"
 }
 
 fn write_asm(file: &mut File, file_name: &str, instructions: Vec<Instr>) {
-    file.write_all(initialization(file_name).as_bytes()).expect("failed to write initialization code to translated file");
+    file.write_all(initialization(file_name).as_bytes())
+        .expect("failed to write initialization code to translated file");
 
     for instruction in instructions {
         file.write_all(instruction.to_assembly(&file_name).as_bytes())
