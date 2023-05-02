@@ -242,15 +242,12 @@ M=D"
                 },
                 Segment::Static => format!(
                     "\
-@{i}
-D=A
 @{file_name}.{i}
-D=M+D
+D=A
 @R13
 M=D
 @SP
-M=M-1
-A=M
+AM=M-1
 D=M
 @R13
 A=M
