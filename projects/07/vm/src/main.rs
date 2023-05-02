@@ -50,9 +50,6 @@ M=D"
 }
 
 fn write_asm(file: &mut File, file_name: &str, instructions: Vec<Instr>) {
-    file.write_all(initialization(file_name).as_bytes())
-        .expect("failed to write initialization code to translated file");
-
     for instruction in instructions {
         file.write_all(instruction.to_assembly(&file_name).as_bytes())
             .expect("failed to write instruction to translated file");
@@ -88,6 +85,13 @@ fn main() {
         let paths = fs::read_dir(file_or_dir).unwrap();
 
         let mut new_file = create_asm_file(&dirname.to_str().unwrap());
+
+        // module name
+        new_file
+            .write_all(
+                initialization(module_name.file_name().unwrap().to_str().unwrap()).as_bytes(),
+            )
+            .expect("failed to write initialization code to translated file");
 
         for path in paths {
             let path = path.unwrap().path();
