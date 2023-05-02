@@ -409,8 +409,8 @@ D;JNE"
 
                 let mut pushes = String::new();
                 for _ in 0..n_vars {
-                    pushes.push_str(&Self::Push(Segment::Const, 0).to_assembly(file_name));
                     pushes.push('\n');
+                    pushes.push_str(&Self::Push(Segment::Const, 0).to_assembly(file_name));
                 }
 
                 format!("{label}{pushes}")
