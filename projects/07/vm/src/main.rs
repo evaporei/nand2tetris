@@ -103,7 +103,8 @@ fn main() {
 
                 write_asm(
                     &mut new_file,
-                    module_name.file_name().unwrap().to_str().unwrap(),
+                    // file name
+                    path.file_stem().unwrap().to_str().unwrap(),
                     instructions,
                 );
             }
