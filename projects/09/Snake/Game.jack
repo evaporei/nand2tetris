@@ -1,8 +1,10 @@
 class Game {
   field Snake snake;
   field int direction;
+  field int delay;
 
   constructor Game new() {
+    do Random.setSeed(RandomSeed.getSeed());
     let snake = Snake.new(256, 128);
     let direction = 0;
     return this;
@@ -56,7 +58,7 @@ class Game {
 
   method void moveSnake() {
     do snake.move(direction);
-    do Sys.wait(5);
+    do Sys.wait(delay);
     return;
   }
 }
