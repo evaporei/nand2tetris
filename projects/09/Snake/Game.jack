@@ -1,19 +1,13 @@
 class Game {
-  /**
-   * 0 = none
-   * 1 = up
-   * 2 = down
-   * 3 = left
-   * 4 = right
-   */
-  field int direction;
+  field Snake snake;
 
   constructor Game new() {
-    let direction = 0;
+    let snake = Snake.new(128, 256);
     return this;
   }
 
   method void dispose() {
+    do snake.dispose();
     do Memory.deAlloc(this);
     return;
   }

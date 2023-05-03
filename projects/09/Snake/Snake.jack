@@ -1,0 +1,31 @@
+class Snake {
+  /* position of the snake in the screen */
+  field int x, y;
+
+  /* length of the snake */
+  field int size;
+
+  /**
+   * 0 = none
+   * 1 = up
+   * 2 = down
+   * 3 = left
+   * 4 = right
+   */
+  field int direction;
+
+  constructor Snake new(int Ax, int Ay) {
+    let x = Ax;
+    let y = Ay;
+
+    let direction = 0;
+    let size = 1;
+
+    return this;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}
