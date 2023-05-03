@@ -26,10 +26,25 @@ class Game {
 
       if (key = 81) { let exit = true; }
 
-      if (key = 131) { let direction = 1; } // up arrow
-      if (key = 133) { let direction = 2; } // down arrow
-      if (key = 130) { let direction = 3; } // left arrow
-      if (key = 132) { let direction = 4; } // right arrow
+      // up arrow
+      if (key = 131 & ~(direction = 2)) {
+        let direction = 1;
+      }
+
+      // down arrow
+      if (key = 133 & ~(direction = 1)) {
+        let direction = 2;
+      }
+
+      // left arrow
+      if (key = 130 & ~(direction = 4)) {
+        let direction = 3;
+      }
+
+      // right arrow
+      if (key = 132 & ~(direction = 3)) {
+        let direction = 4;
+      }
 
       while (~(key = 0)) {
         let key = Keyboard.keyPressed();
