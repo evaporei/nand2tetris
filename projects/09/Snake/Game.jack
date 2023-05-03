@@ -1,0 +1,20 @@
+class Game {
+  /**
+   * 0 = none
+   * 1 = up
+   * 2 = down
+   * 3 = left
+   * 4 = right
+   */
+  field int direction;
+
+  constructor Game new() {
+    let direction = 0;
+    return this;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}
