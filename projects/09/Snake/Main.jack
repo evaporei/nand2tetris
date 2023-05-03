@@ -3,11 +3,9 @@ class Main {
     var Game game;
     let game = Game.new();
 
-    do Output.printString("snakeeee");
-    do Output.println();
+    do game.run();
 
     do game.dispose();
-
     return;
   }
 }

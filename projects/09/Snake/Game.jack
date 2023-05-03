@@ -1,14 +1,47 @@
 class Game {
   field Snake snake;
+  field int direction;
 
   constructor Game new() {
     let snake = Snake.new(256, 128);
+    let direction = 0;
     return this;
   }
 
   method void dispose() {
     do snake.dispose();
     do Memory.deAlloc(this);
+    return;
+  }
+
+  method void run() {
+    var char key;
+    var boolean exit;
+
+    while (~exit) {
+      while (key = 0) {
+        let key = Keyboard.keyPressed();
+        do moveSnake();
+      }
+
+      if (key = 81) { let exit = true; }
+
+      if (key = 131) { let direction = 1; } // up arrow
+      if (key = 133) { let direction = 2; } // down arrow
+      if (key = 130) { let direction = 3; } // left arrow
+      if (key = 132) { let direction = 4; } // right arrow
+
+      while (~(key = 0)) {
+        let key = Keyboard.keyPressed();
+        do moveSnake();
+      }
+    }
+    return;
+  }
+
+  method void moveSnake() {
+    do snake.move(direction);
+    do Sys.wait(5);
     return;
   }
 }
