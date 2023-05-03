@@ -2,8 +2,11 @@ class Snake {
   /* position of the snake in the screen */
   field int x, y;
 
-  /* length of the snake */
+  /* size of the snake */
   field int size;
+
+  /* length of the snake */
+  field int length;
 
   /**
    * 0 = none
@@ -19,13 +22,29 @@ class Snake {
     let y = Ay;
 
     let direction = 0;
-    let size = 1;
+    let length = 1;
+    let size = 10;
+
+    do draw();
 
     return this;
   }
 
   method void dispose() {
+    do erase();
     do Memory.deAlloc(this);
+    return;
+  }
+
+  method void draw() {
+    do Screen.setColor(true);
+    do Screen.drawRectangle(x, y, x + size, y + size);
+    return;
+  }
+
+  method void erase() {
+    do Screen.setColor(false);
+    do Screen.drawRectangle(x, y, x + size, y + size);
     return;
   }
 }

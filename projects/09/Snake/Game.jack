@@ -2,7 +2,7 @@ class Game {
   field Snake snake;
 
   constructor Game new() {
-    let snake = Snake.new(128, 256);
+    let snake = Snake.new(256, 128);
     return this;
   }
 
