@@ -60,6 +60,8 @@ class Game {
         do grid.placeFood();
       }
 
+      do snake.grow(cycle);
+
       do Sys.wait(delay);
       do nextCycle();
     }

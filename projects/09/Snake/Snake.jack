@@ -14,6 +14,10 @@ class Snake {
   /* length of the snake */
   field int length;
 
+  /* history of snake's movements */
+  field Array histX, histY;
+  field int histSize;
+
   /**
    * 0 = none
    * 1 = up
@@ -28,6 +32,7 @@ class Snake {
 
   constructor Snake new(Game Agame, int Ax, int Ay) {
     var int i;
+    var Grid grid;
 
     let direction = 0;
     let length = 10;
@@ -36,6 +41,11 @@ class Snake {
     let size = 10;
 
     let game = Agame;
+    let grid = game.getGrid();
+    let histSize = grid.xSize();
+
+    let histX = Array.new(histSize);
+    let histY = Array.new(histSize);
 
     let x = Ax - length;
     let y = Ay;
@@ -52,6 +62,8 @@ class Snake {
   }
 
   method void dispose() {
+    do histX.dispose();
+    do histY.dispose();
     do Memory.deAlloc(this);
     return;
   }
@@ -61,6 +73,21 @@ class Snake {
     let grid = game.getGrid();
 
     do grid.drawSnakeBit(x, y);
+    let histX[cycle] = x;
+    let histY[cycle] = y;
+
+    return;
+  }
+
+  method void clearTail(int cycle) {
+    var Grid grid;
+    var int tailIndex, tailX, tailY;
+
+    let tailIndex = cycle - length;
+    let tailX = histX[tailIndex];
+    let tailY = histY[tailIndex];
+    let grid = game.getGrid();
+    do grid.clearSnakeBit(tailX, tailY);
 
     return;
   }
@@ -116,8 +143,43 @@ class Snake {
     return true;
   }
 
+  method void rewriteHistory() {
+    var int i, src, dst;
+
+    let i = length;
+    let dst = 0;
+    let src = histSize - length;
+
+    while (i > 0) {
+      let histX[dst] = histX[src];
+      let histY[dst] = histY[src];
+      let src = src + 1;
+      let dst = dst + 1;
+      let i = i - 1;
+    }
+
+    return;
+  }
+
   method void eatFood() {
     let toGrow = toGrow + growBy;
+    return;
+  }
+
+  method void grow(int cycle) {
+    // draw new head
+    do drawHead(cycle);
+
+    // should the snake grow?
+    if (toGrow > 0) {
+      let toGrow = toGrow - 1;
+      let length = length + 1;
+    }
+    // clear old tail
+    else {
+      do clearTail(cycle);
+    }
+
     return;
   }
 

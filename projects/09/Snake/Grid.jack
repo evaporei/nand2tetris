@@ -77,6 +77,13 @@ class Grid {
     return;
   }
 
+  method void clearSnakeBit(int x, int y) {
+    do Screen.setColor(false);
+    do Screen.drawRectangle(x * 4, y * 4, (x * 4) + 4, (y * 4) + 4);
+    do setOccupied(x, y, false);
+    return;
+  }
+
   method void drawCrashed() {
     var String out;
 
