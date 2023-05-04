@@ -17,7 +17,7 @@ fn create_tokens_file(file: &str) -> File {
     File::create(new_file).expect("failed to create assembly file")
 }
 
-fn write_tokens(file: &mut File, tokens: Vec<String>) {
+fn write_tokens(file: &mut File, tokens: &Vec<String>) {
     for token in tokens {
         file.write_all(token.as_bytes())
             .expect("failed to write token to tokens file");
@@ -38,7 +38,9 @@ fn main() {
 
         let source = fs::read_to_string(file).expect("vm program doesn't exist");
 
-        let tokens = Tokenizer::tokenize(source.lines());
+        let mut tokenizer = Tokenizer::new(&source);
+
+        let tokens = tokenizer.scan_tokens();
 
         let mut new_file = create_tokens_file(file);
 
