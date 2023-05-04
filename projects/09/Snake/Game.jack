@@ -30,6 +30,8 @@ class Game {
     let exit = false;
 
     while (~exit) {
+      let key = Keyboard.keyPressed();
+
       if (key = 81) { let exit = true; }
 
       // up arrow
