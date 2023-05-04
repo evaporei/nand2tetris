@@ -1,6 +1,8 @@
 class Grid {
   field int xSize, ySize;
 
+  field int foodX, foodY;
+
   field Array grid;
 
   constructor Grid new(int Ax, int Ay) {
@@ -44,6 +46,25 @@ class Grid {
       let grid[x] = xGrid;
       let x = x + 1;
     }
+
+    return;
+  }
+
+  method void placeFood() {
+    var boolean found;
+    var int randX, randY;
+
+    // don't put food on top of snake
+    let found = false;
+    while (~found) {
+      let randX = Random.randRange(xSize);
+      let randY = Random.randRange(ySize);
+      if (~checkOccupied(randX, randY))
+        let found = true;
+    }
+
+    let foodX = randX;
+    let foodY = randX;
 
     return;
   }

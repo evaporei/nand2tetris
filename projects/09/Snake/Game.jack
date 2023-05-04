@@ -9,6 +9,9 @@ class Game {
     let direction = 0;
     let grid = Grid.new(512, 256);
     let snake = Snake.new(grid.xSize() / 2, grid.ySize() / 2);
+
+    do grid.placeFood();
+
     return this;
   }
 
