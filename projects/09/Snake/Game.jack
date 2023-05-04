@@ -3,12 +3,14 @@ class Game {
   field int direction;
   field int delay;
   field Grid grid;
+  field int cycle;
 
   constructor Game new() {
     do Random.setSeed(RandomSeed.getSeed());
     let direction = 0;
+    let cycle = 0;
     let grid = Grid.new(512, 256);
-    let snake = Snake.new(grid.xSize() / 2, grid.ySize() / 2);
+    let snake = Snake.new(this, grid.xSize() / 2, grid.ySize() / 2);
 
     do grid.placeFood();
 
@@ -27,11 +29,6 @@ class Game {
     var boolean exit;
 
     while (~exit) {
-      while (key = 0) {
-        let key = Keyboard.keyPressed();
-        do moveSnake();
-      }
-
       if (key = 81) { let exit = true; }
 
       // up arrow
@@ -54,17 +51,31 @@ class Game {
         let direction = 4;
       }
 
-      while (~(key = 0)) {
-        let key = Keyboard.keyPressed();
-        do moveSnake();
+      if (~snake.tryMove()) {
+        do grid.drawCrashed();
+        do Sys.halt();
       }
+
+      do Sys.wait(delay);
+      do nextCycle();
     }
+
+    do grid.drawDone();
+    do Sys.halt();
+
     return;
   }
 
-  method void moveSnake() {
-    do snake.move(direction);
-    do Sys.wait(delay);
+  method void nextCycle() {
+    let cycle = cycle + 1;
     return;
+  }
+
+  method int getCycle() {
+    return cycle;
+  }
+
+  method Grid getGrid() {
+    return grid;
   }
 }

@@ -59,12 +59,42 @@ class Grid {
     while (~found) {
       let randX = Random.randRange(xSize);
       let randY = Random.randRange(ySize);
-      if (~checkOccupied(randX, randY))
+      if (~checkOccupied(randX, randY)) {
         let found = true;
+      }
     }
 
     let foodX = randX;
     let foodY = randX;
+
+    return;
+  }
+
+  method void drawSnakeBit(int x, int y) {
+    do Screen.setColor(true);
+    do Screen.drawRectangle(x * 4, y * 4, (x * 4) + 4, (y * 4) + 4);
+    do setOccupied(x, y, true);
+    return;
+  }
+
+  method void drawCrashed() {
+    var String out;
+
+    do Output.moveCursor(22, 12);
+    let out = "*CRASHED*";
+    do Output.printString(out);
+    do out.dispose();
+
+    return;
+  }
+
+  method void drawDone() {
+    var String out;
+
+    do Output.moveCursor(22, 12);
+    let out = " [DONE]  ";
+    do Output.printString(out);
+    do out.dispose();
 
     return;
   }
