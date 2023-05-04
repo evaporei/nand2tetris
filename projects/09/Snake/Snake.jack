@@ -2,9 +2,6 @@ class Snake {
   /* position of the snake in the screen */
   field int x, y;
 
-  /* size of the snake */
-  field int size;
-
   /* how much snake grows when it eats food */
   field int growBy;
 
@@ -38,7 +35,6 @@ class Snake {
     let length = 10;
     let growBy = 3;
     let toGrow = 0;
-    let size = 10;
 
     let game = Agame;
     let grid = game.getGrid();
