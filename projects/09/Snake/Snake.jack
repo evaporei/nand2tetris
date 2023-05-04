@@ -68,6 +68,15 @@ class Snake {
     return;
   }
 
+  method boolean checkRewriteHistory() {
+    if (game.getCycle() = histSize) {
+      do rewriteHistory();
+      return true;
+    }
+
+    return false;
+  }
+
   method void drawHead(int cycle) {
     var Grid grid;
     let grid = game.getGrid();
@@ -198,5 +207,9 @@ class Snake {
 
   method int getY() {
     return y;
+  }
+
+  method int getLength() {
+    return length;
   }
 }

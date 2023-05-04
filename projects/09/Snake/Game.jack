@@ -65,6 +65,10 @@ class Game {
       do grid.drawFood();
       do Sys.wait(delay);
       do nextCycle();
+
+      if (snake.checkRewriteHistory()) {
+        let cycle = snake.getLength();
+      }
     }
 
     do grid.drawDone();
