@@ -34,7 +34,7 @@ class Snake {
     var int i;
     var Grid grid;
 
-    let direction = 0;
+    let direction = 4;
     let length = 10;
     let growBy = 3;
     let toGrow = 0;

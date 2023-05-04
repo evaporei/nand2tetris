@@ -7,6 +7,7 @@ class Game {
   constructor Game new() {
     do Random.setSeed(RandomSeed.getSeed());
     let cycle = 0;
+    let delay = 100;
     let grid = Grid.new(512, 256);
     let snake = Snake.new(this, grid.xSize() / 2, grid.ySize() / 2);
 
@@ -25,6 +26,8 @@ class Game {
   method void run() {
     var char key;
     var boolean exit;
+
+    let exit = false;
 
     while (~exit) {
       if (key = 81) { let exit = true; }
