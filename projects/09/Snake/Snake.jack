@@ -5,7 +5,11 @@ class Snake {
   /* size of the snake */
   field int size;
 
+  /* how much snake grows when it eats food */
   field int growBy;
+
+  /* how much snake has left too grow */
+  field int toGrow;
 
   /* length of the snake */
   field int length;
@@ -28,6 +32,7 @@ class Snake {
     let direction = 0;
     let length = 10;
     let growBy = 3;
+    let toGrow = 0;
     let size = 10;
 
     let game = Agame;
@@ -111,6 +116,11 @@ class Snake {
     return true;
   }
 
+  method void eatFood() {
+    let toGrow = toGrow + growBy;
+    return;
+  }
+
   method int getDir() {
     return direction;
   }
@@ -118,5 +128,13 @@ class Snake {
   method void setDir(int dir) {
     let direction = dir;
     return;
+  }
+
+  method int getX() {
+    return x;
+  }
+
+  method int getY() {
+    return y;
   }
 }

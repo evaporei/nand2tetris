@@ -54,6 +54,12 @@ class Game {
         do Sys.halt();
       }
 
+      if (grid.checkFood(snake.getX(), snake.getY())) {
+        do snake.eatFood();
+        do nextLevel();
+        do grid.placeFood();
+      }
+
       do Sys.wait(delay);
       do nextCycle();
     }
@@ -66,6 +72,14 @@ class Game {
 
   method void nextCycle() {
     let cycle = cycle + 1;
+    return;
+  }
+
+  method void nextLevel() {
+    if (delay > 30) {
+      let delay = delay - 5;
+    }
+
     return;
   }
 

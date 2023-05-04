@@ -116,6 +116,14 @@ class Grid {
     }
   }
 
+  method boolean checkFood(int x, int y) {
+    if (x = foodX & y = foodY) {
+      return true;
+    }
+
+    return false;
+  }
+
   method int xSize() {
     return xSize;
   }
