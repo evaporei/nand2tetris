@@ -110,4 +110,13 @@ class Snake {
 
     return true;
   }
+
+  method int getDir() {
+    return direction;
+  }
+
+  method void setDir(int dir) {
+    let direction = dir;
+    return;
+  }
 }

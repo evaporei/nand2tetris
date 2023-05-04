@@ -1,13 +1,11 @@
 class Game {
   field Snake snake;
-  field int direction;
   field int delay;
   field Grid grid;
   field int cycle;
 
   constructor Game new() {
     do Random.setSeed(RandomSeed.getSeed());
-    let direction = 0;
     let cycle = 0;
     let grid = Grid.new(512, 256);
     let snake = Snake.new(this, grid.xSize() / 2, grid.ySize() / 2);
@@ -32,23 +30,23 @@ class Game {
       if (key = 81) { let exit = true; }
 
       // up arrow
-      if (key = 131 & ~(direction = 2)) {
-        let direction = 1;
+      if (key = 131 & ~(snake.getDir() = 2)) {
+        do snake.setDir(1);
       }
 
       // down arrow
-      if (key = 133 & ~(direction = 1)) {
-        let direction = 2;
+      if (key = 133 & ~(snake.getDir() = 1)) {
+        do snake.setDir(2);
       }
 
       // left arrow
-      if (key = 130 & ~(direction = 4)) {
-        let direction = 3;
+      if (key = 130 & ~(snake.getDir() = 4)) {
+        do snake.setDir(3);
       }
 
       // right arrow
-      if (key = 132 & ~(direction = 3)) {
-        let direction = 4;
+      if (key = 132 & ~(snake.getDir() = 3)) {
+        do snake.setDir(4);
       }
 
       if (~snake.tryMove()) {
