@@ -1,0 +1,75 @@
+class Grid {
+  field int xSize, ySize;
+
+  field Array grid;
+
+  constructor Grid new(int Ax, int Ay) {
+    let xSize = Ax / 4;
+    let ySize = Ay / 4;
+
+    do initGrid();
+
+    return this;
+  }
+
+  method void dispose() {
+    var int x;
+    var Array xGrid;
+
+    let x = 0;
+    while (x < xSize) {
+      let xGrid = grid[x];
+      do xGrid.dispose();
+      let x = x + 1;
+    }
+
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void initGrid() {
+    var int x, y;
+    var Array xGrid;
+
+    let grid = Array.new(xSize);
+    let x = 0;
+
+    while (x < xSize) {
+      let xGrid = Array.new(ySize);
+      let y = 0;
+      while (y < ySize) {
+        let xGrid[y] = false;
+        let y = y + 1;
+      }
+      let grid[x] = xGrid;
+      let x = x + 1;
+    }
+
+    return;
+  }
+
+  method void setOccupied(int x, int y, boolean occupied) {
+    var Array xGrid;
+    let xGrid = grid[x];
+    let xGrid[y] = occupied;
+    return;
+  }
+
+  method boolean checkOccupied(int x, int y) {
+    var Array xGrid;
+    let xGrid = grid[x];
+    if (xGrid[y]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  method int xSize() {
+    return xSize;
+  }
+
+  method int ySize() {
+    return ySize;
+  }
+}

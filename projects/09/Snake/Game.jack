@@ -2,16 +2,19 @@ class Game {
   field Snake snake;
   field int direction;
   field int delay;
+  field Grid grid;
 
   constructor Game new() {
     do Random.setSeed(RandomSeed.getSeed());
-    let snake = Snake.new(256, 128);
     let direction = 0;
+    let grid = Grid.new(512, 256);
+    let snake = Snake.new(grid.xSize() / 2, grid.ySize() / 2);
     return this;
   }
 
   method void dispose() {
     do snake.dispose();
+    do grid.dispose();
     do Memory.deAlloc(this);
     return;
   }
