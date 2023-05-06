@@ -1,3 +1,4 @@
+use compiler::token::Token;
 use compiler::tokenizer::Tokenizer;
 use std::{
     env,
@@ -17,14 +18,20 @@ fn create_tokens_file(file: &str) -> File {
     File::create(new_file).expect("failed to create assembly file")
 }
 
-fn write_tokens(file: &mut File, tokens: &Vec<String>) {
+fn write_tokens(file: &mut File, tokens: &Vec<Token>) {
+    file.write_all(b"<tokens>\n")
+        .expect("failed to write opening tokens tag to tokens file");
+
     for token in tokens {
-        file.write_all(token.as_bytes())
+        file.write_all(token.to_xml_tag().as_bytes())
             .expect("failed to write token to tokens file");
 
         file.write_all(b"\n")
             .expect("failed to write new line to tokens file");
     }
+
+    file.write_all(b"</tokens>")
+        .expect("failed to write closing tokens tag to tokens file");
 }
 
 fn main() {
